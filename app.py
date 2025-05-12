@@ -128,6 +128,19 @@ st.markdown("""
         letter-spacing: 0.5px;
     }
     
+    /* 입력 필드 스타일 - Streamlit 컴포넌트 직접 스타일링 */
+    .stTextInput > div {
+        background-color: rgba(255, 255, 255, 0.04) !important;
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        border-radius: 20px !important;
+        color: #eef2f7 !important;
+    }
+    
+    .stTextInput > div > div > input {
+        color: #eef2f7 !important;
+        font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+    }
+    
     /* 채팅 메시지 컨테이너 */
     .imfact-chat-message {
         width: var(--content-width);
@@ -229,7 +242,29 @@ st.markdown("""
         opacity: 0.7;
     }
     
-    /* 키 팩트 스타일 */
+    /* 데이터 시각화 영역 */
+    .data-visualization {
+        background-color: rgba(59, 130, 246, 0.05);
+        border: 1px solid rgba(59, 130, 246, 0.15);
+        border-radius: 8px;
+        padding: 16px 20px;
+        margin: 20px 0;
+        position: relative;
+    }
+    
+    .data-visualization::before {
+        content: '📈 데이터'; /* 차트 아이콘 & 데이터 텍스트 */
+        position: absolute;
+        top: -10px;
+        left: 15px;
+        background-color: #0c1016;
+        padding: 0 8px;
+        font-size: 0.75rem;
+        color: rgba(59, 130, 246, 0.8);
+        font-weight: 600;
+        letter-spacing: 0.5px;
+    }
+    
     .key-fact {
         background-color: rgba(79, 209, 197, 0.1);
         border-radius: 4px;
@@ -291,6 +326,44 @@ st.markdown("""
         letter-spacing: 0.5px;
     }
     
+    /* 푸터 */
+    .imfact-footer {
+        width: var(--content-width);
+        max-width: var(--content-max-width);
+        margin: 24px auto 0;
+        text-align: center;
+        color: rgba(255, 255, 255, 0.3);
+        font-size: 0.8rem;
+    }
+    
+    /* Streamlit 기본 여백 제거 */
+    .block-container {
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        max-width: 100% !important;
+        margin: 0 auto !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+    }
+    
+    /* 헤더 숨기기 */
+    header {
+        visibility: hidden !important;
+        height: 0 !important;
+    }
+    
+    /* 사이드바 햄버거 메뉴 숨기기 */
+    .st-emotion-cache-1b32qh4 {
+        visibility: hidden !important;
+    }
+    
+    /* 푸터 숨기기 */
+    footer {
+        visibility: hidden !important;
+        height: 0 !important;
+    }
+    
     /* 로딩 표시자 */
     .typing-indicator {
         display: flex;
@@ -335,6 +408,114 @@ st.markdown("""
         }
     }
     
+    /* 시각화 요소 */
+    .message-content {
+        width: 100%;
+        line-height: 1.5;
+        padding-left: 5px;
+    }
+    
+    .message-content p {
+        margin-bottom: 12px;
+    }
+    
+    .message-content p:last-child {
+        margin-bottom: 0;
+    }
+    
+    .message-content ul, .message-content ol {
+        margin-top: 8px;
+        margin-bottom: 12px;
+    }
+    
+    .message-content li {
+        margin-bottom: 4px;
+    }
+    
+    /* Streamlit 컬럼 내 버튼에 강력한 커스텀 스타일 적용 */
+    .imfact-button-container [data-testid="stHorizontalBlock"] > div[data-testid="stVerticalBlock"] > div[data-testid="stButton"] > button,
+    .stButton > button {
+        background: rgba(20,25,30,0.85) !important;
+        border: 1px solid rgba(255,255,255,0.12) !important;
+        border-radius: var(--border-radius) !important;
+        padding: 10px 2px !important;
+        color: #eef2f7 !important;
+        font-size: 0.85rem !important;
+        font-weight: 500 !important;
+        cursor: pointer !important;
+        transition: all 0.2s ease !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 6px !important;
+        white-space: nowrap !important;
+        flex: 1 !important;
+        min-width: 0 !important;
+        width: 100% !important;
+        height: 50px !important;
+        line-height: normal !important;
+        margin: 0 auto !important;
+        overflow: hidden !important;
+    }
+    .imfact-button-container [data-testid="stHorizontalBlock"] > div[data-testid="stVerticalBlock"] > div[data-testid="stButton"] > button:hover,
+    .stButton > button:hover {
+        background: rgba(79,209,197,0.13) !important;
+        color: var(--accent-color) !important;
+        border-color: var(--accent-color) !important;
+    }
+    
+    /* 버튼 클릭시/포커스 상태 스타일 */
+    .stButton > button:active, 
+    .stButton > button:focus,
+    .imfact-button-container [data-testid="stHorizontalBlock"] > div[data-testid="stVerticalBlock"] > div[data-testid="stButton"] > button:active,
+    .imfact-button-container [data-testid="stHorizontalBlock"] > div[data-testid="stVerticalBlock"] > div[data-testid="stButton"] > button:focus {
+        background: rgba(79,209,197,0.2) !important;
+        color: var(--accent-color) !important;
+        border-color: var(--accent-color) !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+    
+    /* 검색 컨테이너 - 더 강력한 선택자 사용 */
+    .imfact-search-container {
+        position: relative;
+        width: var(--content-width) !important;
+        max-width: var(--content-max-width) !important;
+        margin: 16px auto !important;
+        box-sizing: border-box !important;
+        display: flex !important;
+        justify-content: center !important;
+    }
+    
+    /* 입력 필드 스타일 구체화 */
+    .imfact-search-container .stTextInput {
+        width: 100% !important;
+        max-width: var(--content-width) !important;
+        display: flex !important;
+        justify-content: center !important;
+    }
+    
+    .imfact-search-container .stTextInput > div {
+        width: 100% !important;
+        max-width: 100% !important;
+        background-color: rgba(255, 255, 255, 0.04) !important;
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        border-radius: var(--border-radius) !important;
+        color: #eef2f7 !important;
+        padding: 0 15px !important;
+    }
+    
+    /* 검색 아이콘 위치 조정 - 사용하지 않음 */
+    /*.imfact-search-icon {
+        position: absolute !important;
+        left: 15px !important;
+        top: 14px !important;
+        color: rgba(255, 255, 255, 0.5) !important;
+        z-index: 100 !important;
+        font-size: 1.1rem !important;
+        pointer-events: none !important;
+    }*/
+    
     /* 웰컴 텍스트 */
     .welcome-text {
         text-align: center;
@@ -343,33 +524,44 @@ st.markdown("""
         color: rgba(238, 242, 247, 0.7);
         font-size: 0.95rem;
         line-height: 1.5;
+        margin-left: auto;
+        margin-right: auto;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
     
-    /* 헤더 숨기기 */
-    header {
-        visibility: hidden !important;
-        height: 0 !important;
+    /* Streamlit 기본 스타일 오버라이드 */
+    .stButton, .stTextInput {
+        width: 100% !important;
+        max-width: 100% !important;
+        display: flex !important;
+        justify-content: center !important;
+    }
+    /* 각 버튼 열의 너비 제한 */
+    .row-widget.stButton > button {
+        width: 100% !important;
+        margin: 0 auto !important;
     }
     
-    /* 사이드바 햄버거 메뉴 숨기기 */
-    .st-emotion-cache-1b32qh4 {
-        visibility: hidden !important;
+    /* Streamlit 컬럼 정렬 개선 */
+    [data-testid="stHorizontalBlock"] {
+        display: flex !important;
+        justify-content: center !important;
+        gap: 2px !important;
+        width: 100% !important;
+        max-width: var(--content-width) !important;
+        margin: 0 auto !important;
     }
     
-    /* 푸터 숨기기 */
-    footer {
-        visibility: hidden !important;
-        height: 0 !important;
-    }
-    
-    /* 푸터 */
-    .imfact-footer {
-        width: var(--content-width);
-        max-width: var(--content-max-width);
-        margin: 24px auto 0;
-        text-align: center;
-        color: rgba(255, 255, 255, 0.3);
-        font-size: 0.8rem;
+    /* 각 컬럼의 너비와 정렬 조정 */
+    [data-testid="stHorizontalBlock"] > [data-testid="stVerticalBlock"] {
+        flex: 1 !important;
+        min-width: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -408,6 +600,64 @@ def handle_user_input():
         st.session_state.chat_input = ""  # 입력 필드 초기화
         st.session_state.is_typing = True
         st.rerun()
+
+# IM.FACT 응답 생성
+def generate_response(question):
+    # 타이핑 효과를 위한 지연
+    time.sleep(1.5)
+    
+    now = datetime.now().strftime("%H:%M")
+    
+    # 질문에 따른 샘플 응답 (기존 코드와 동일)
+    if "탄소중립" in question:
+        answer = {
+            "role": "assistant",
+            "content": """탄소중립이란 인간 활동에 의한 온실가스 배출량을 최대한 줄이고, 남은 배출량은 산림 등의 탄소흡수원으로 제거하여 실질적인 배출량을 '0(Zero)'으로 만드는 개념입니다.
+
+<citation>IPCC 제6차 평가보고서에 따르면, 지구온난화를 1.5℃ 이내로 제한하기 위해서는 2050년까지 전 지구적 탄소중립 달성이 필수적입니다. 현재 추세대로라면 2100년까지 지구 평균 온도가 산업화 이전 대비 3.3-5.7℃ 상승할 것으로 예측됩니다.</citation>
+
+주요 탄소중립 달성 방안:
+
+1. <key-fact>에너지 전환</key-fact>: 화석연료에서 재생에너지로 전환
+2. <key-fact>산업구조 혁신</key-fact>: 탄소 집약적 산업의 저탄소화
+3. <key-fact>흡수원 확대</key-fact>: 산림, CCUS 기술 등 탄소 제거 기술 활용
+
+한국은 2020년 10월 '2050 탄소중립'을 선언했으며, 2021년 '기후위기 대응을 위한 탄소중립·녹색성장 기본법'을 제정했습니다. 2030년까지 2018년 대비 40% 감축을 중간목표로 설정하고 있습니다.""",
+            "time": now,
+            "sources": [
+                {"name": "IPCC 제6차 평가보고서 (2021)", "icon": "📄"},
+                {"name": "환경부 2050 탄소중립 전략", "icon": "🏛️"},
+                {"name": "기후변화에 관한 정부간 협의체", "icon": "🌍"}
+            ]
+        }
+    # 다른 질문 응답들 (기존 코드와 동일)
+    else:
+        answer = {
+            "role": "assistant",
+            "content": f"""환경 및 기후 관련 질문에 답변해 드리겠습니다. 제공해 주신 질문 "{question}"에 대한 답변입니다.
+
+현대 환경 문제는 기후변화, 생물다양성 손실, 오염, 자원 고갈 등 다양한 측면을 포함하고 있습니다. 이러한 문제들은 서로 연결되어 있으며, 통합적인 접근이 필요합니다.
+
+<citation>IPCC와 IPBES의 공동 보고서에 따르면, 기후변화와 생물다양성 문제는 서로 밀접하게 연관되어 있으며, 한 문제를 해결하려는 노력이 다른 문제를 악화시키지 않도록 통합적 접근법이 중요합니다.</citation>
+
+환경 문제 해결을 위한 주요 접근법:
+
+1. <key-fact>과학 기반 정책</key-fact>: 신뢰할 수 있는 과학적 증거에 기반한 정책 수립
+2. <key-fact>시스템 사고</key-fact>: 환경, 사회, 경제적 측면을 통합적으로 고려
+3. <key-fact>다자간 협력</key-fact>: 국제적, 지역적, 지방적 수준의 협력 강화
+
+자세한 정보가 필요하시거나 특정 환경 주제에 대해 더 알고 싶으시다면, 구체적인 질문을 주시기 바랍니다.""",
+            "time": now,
+            "sources": [
+                {"name": "IPCC-IPBES 공동 워크숍 보고서", "icon": "📄"},
+                {"name": "UN 환경계획 글로벌 환경 전망", "icon": "🌐"},
+                {"name": "환경부 환경정책 기본계획", "icon": "🏛️"}
+            ]
+        }
+    
+    # 채팅 기록에 응답 추가
+    st.session_state.chat_history.append(answer)
+    st.session_state.is_typing = False
 
 # 로고 및 환영 메시지 (처음 방문 시)
 if len(st.session_state.chat_history) == 0:
@@ -450,6 +700,7 @@ for message in st.session_state.chat_history:
         content = message["content"]
         content = content.replace("<citation>", '<div class="imfact-citation">').replace("</citation>", '</div>')
         content = content.replace("<key-fact>", '<span class="key-fact">').replace("</key-fact>", '</span>')
+        content = content.replace("<data-visualization>", '<div class="data-visualization">').replace("</data-visualization>", '</div>')
         
         st.markdown(f"""
         <div class="imfact-chat-message assistant">
@@ -481,6 +732,46 @@ if st.session_state.is_typing:
         </div>
     </div>
     """, unsafe_allow_html=True)
+    
+    # 응답 생성 및 재실행
+    last_question = st.session_state.chat_history[-1]["content"]
+    generate_response(last_question)
+    st.rerun()
+
+# 버튼 컨테이너 (Streamlit 컬럼 기반 - 너비 조정)
+st.markdown('<div class="imfact-button-container">', unsafe_allow_html=True)
+cols = st.columns([0.9, 1, 0.8, 1, 1.1])  # 버튼 텍스트 길이에 맞게 연습적으로 조정
+
+button_definitions = [
+    {"icon": "🌡️", "label": "기후변화", "key": "btn_climate_impact", "query": "기후변화가 한국에 미치는 영향은?"},
+    {"icon": "♻️", "label": "탄소중립", "key": "btn_carbon_neutral", "query": "탄소중립이란 무엇인가요?"},
+    {"icon": "🌐", "label": "IPCC", "key": "btn_ipcc", "query": "IPCC란 무엇인가요?"},
+    {"icon": "📊", "label": "온실가스", "key": "btn_emissions", "query": "한국의 온실가스 배출 현황은?"},
+    {"icon": "💪", "label": "실천방법", "key": "btn_personal", "query": "기후변화 대응 방법은?"}
+]
+
+for i, button_def in enumerate(button_definitions):
+    with cols[i]:
+        button_text = f"{button_def['icon']} {button_def['label']}"
+        if st.button(button_text, key=button_def["key"], use_container_width=True):
+            st.session_state.chat_input = button_def["query"]
+            handle_user_input()
+
+st.markdown('</div>', unsafe_allow_html=True)
+
+# 검색 입력 필드 - 중앙 정렬 개선
+st.markdown('<div style="display: flex; justify-content: center; width: 100%; margin-top: 20px;">', unsafe_allow_html=True)
+search_container = st.container()
+with search_container:
+    # 입력 필드 - 플레이스홀더에 돋보기 아이콘 추가
+    st.text_input(
+        "환경, 기후, 지속가능성에 대해 무엇이든 물어보세요",
+        placeholder="🔍 예: 탄소중립이란 무엇인가요?",
+        label_visibility="collapsed",
+        key="chat_input",
+        on_change=handle_user_input
+    )
+st.markdown('</div>', unsafe_allow_html=True)
 
 # 푸터
 st.markdown('''
