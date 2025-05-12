@@ -563,29 +563,95 @@ st.markdown("""
         align-items: center !important;
         justify-content: center !important;
     }
+    
+    /* 숨겨진 버튼 스타일 */
+    [data-testid="stSidebar"] [data-testid="stButton"] {
+        display: none !important;
+    }
+    
+    /* 사이드바 아이콘 클릭 효과 강화 */
+    .sidebar-icon {{
+        cursor: pointer !important;
+        z-index: 9999 !important;
+        pointer-events: auto !important;
+    }}
+    
+    .sidebar-icon a, .sidebar-user a {{
+        color: inherit;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+    }}
 </style>
 """, unsafe_allow_html=True)
-
-# 사이드바
-st.markdown("""
-<div class="sidebar">
-    <div class="sidebar-icon active" title="홈">🌍</div>
-    <div class="sidebar-icon" title="기후 데이터 검색">+</div>
-    <div class="sidebar-icon" title="지구 환경">🔍</div>
-    <div class="sidebar-icon" title="지속가능성">🌐</div>
-    <div class="sidebar-icon" title="탄소중립">♻️</div>
-    <div class="sidebar-user">U</div>
-</div>
-""", unsafe_allow_html=True)
-
-# 메인 콘텐츠
-st.markdown('<div class="imfact-content">', unsafe_allow_html=True)
 
 # 세션 상태 초기화
 if 'chat_history' not in st.session_state:
     st.session_state.chat_history = []
 if 'is_typing' not in st.session_state:
     st.session_state.is_typing = False
+if 'current_tab' not in st.session_state:
+    st.session_state.current_tab = "home"  # 기본 탭: 홈
+
+# URL 파라미터로 탭 변경 감지
+if "tab" in st.query_params:
+    tab_name = st.query_params["tab"]
+    if tab_name in ["home", "new", "data", "sustainability", "carbon", "user"]:
+        st.session_state.current_tab = tab_name
+
+# 사이드바
+st.markdown(f"""
+<style>
+    /* Streamlit 기본 사이드바 숨기기 */
+    [data-testid="stSidebar"] {{
+        display: none !important;
+    }}
+    
+    /* 사이드바 아이콘 클릭 효과 강화 */
+    .sidebar-icon {{
+        cursor: pointer !important;
+        z-index: 9999 !important;
+        pointer-events: auto !important;
+    }}
+    
+    .sidebar-icon a, .sidebar-user a {{
+        color: inherit;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+    }}
+</style>
+
+<div class="sidebar">
+    <div class="sidebar-icon {st.session_state.current_tab == 'home' and 'active' or ''}">
+        <a href="?tab=home" title="홈" target="_self">🌍</a>
+    </div>
+    <div class="sidebar-icon {st.session_state.current_tab == 'new' and 'active' or ''}">
+        <a href="?tab=new" title="새 대화" target="_self">+</a>
+    </div>
+    <div class="sidebar-icon {st.session_state.current_tab == 'data' and 'active' or ''}">
+        <a href="?tab=data" title="지구 환경 데이터" target="_self">🔍</a>
+    </div>
+    <div class="sidebar-icon {st.session_state.current_tab == 'sustainability' and 'active' or ''}">
+        <a href="?tab=sustainability" title="지속가능성" target="_self">🌐</a>
+    </div>
+    <div class="sidebar-icon {st.session_state.current_tab == 'carbon' and 'active' or ''}">
+        <a href="?tab=carbon" title="탄소중립" target="_self">♻️</a>
+    </div>
+    <div class="sidebar-user">
+        <a href="?tab=user" title="사용자 설정" target="_self">U</a>
+    </div>
+</div>
+""", unsafe_allow_html=True)
+
+# 메인 콘텐츠
+st.markdown('<div class="imfact-content">', unsafe_allow_html=True)
 
 # 사용자 입력 처리
 def handle_user_input():
@@ -659,119 +725,191 @@ def generate_response(question):
     st.session_state.chat_history.append(answer)
     st.session_state.is_typing = False
 
-# 로고 및 환영 메시지 (처음 방문 시)
-if len(st.session_state.chat_history) == 0:
+# 탭별 콘텐츠 표시
+if st.session_state.current_tab == "home":
+    # 로고 및 환영 메시지 (처음 방문 시)
+    if len(st.session_state.chat_history) == 0:
+        st.markdown("""
+        <div class="logo-container">
+            <div class="logo-text">IM.<span class="logo-highlight">FACT</span><span class="logo-badge">eco</span></div>
+        </div>
+        <div class="welcome-text">
+            환경, 기후변화, 지속가능성에 관한 신뢰할 수 있는 정보를 제공합니다. 
+            IM.FACT는 IPCC, UN환경계획, 기상청 등의 공식 자료를 기반으로 과학적이고 균형 잡힌 답변을 제공합니다.
+        </div>
+        """, unsafe_allow_html=True)
+
+    # 대화 기록 표시
+    for message in st.session_state.chat_history:
+        if message["role"] == "user":
+            st.markdown(f"""
+            <div class="imfact-chat-message user">
+                <div class="message-header">
+                    <div class="avatar user-avatar">U</div>
+                    <span class="name-title">You</span>
+                    <span class="time">{message["time"]}</span>
+                </div>
+                <div class="message-content">
+                    {message["content"]}
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+        else:
+            # 소스 표시 준비
+            sources_html = ""
+            if "sources" in message:
+                sources_html = '<div class="source-links">'
+                sources_html += '<span class="source-header">출처</span>'
+                for source in message["sources"]:
+                    sources_html += f'<div class="source-link"><span>{source["icon"]}</span> {source["name"]}</div>'
+                sources_html += '</div>'
+            
+            # 특수 태그 변환
+            content = message["content"]
+            content = content.replace("<citation>", '<div class="imfact-citation">').replace("</citation>", '</div>')
+            content = content.replace("<key-fact>", '<span class="key-fact">').replace("</key-fact>", '</span>')
+            content = content.replace("<data-visualization>", '<div class="data-visualization">').replace("</data-visualization>", '</div>')
+            
+            st.markdown(f"""
+            <div class="imfact-chat-message assistant">
+                <div class="message-header">
+                    <div class="avatar assistant-avatar">🌍</div>
+                    <span class="name-title">IM.FACT</span>
+                    <span class="time">{message["time"]}</span>
+                </div>
+                <div class="message-content">
+                    {content}
+                    {sources_html}
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+
+    # 타이핑 표시기
+    if st.session_state.is_typing:
+        st.markdown("""
+        <div class="imfact-chat-message assistant">
+            <div class="message-header">
+                <div class="avatar assistant-avatar">🌍</div>
+                <span class="name-title">IM.FACT</span>
+                <span class="time">응답 작성 중...</span>
+            </div>
+            <div class="typing-indicator">
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # 응답 생성 및 재실행
+        last_question = st.session_state.chat_history[-1]["content"]
+        generate_response(last_question)
+        st.rerun()
+
+    # 버튼 컨테이너
+    st.markdown('<div class="imfact-button-container">', unsafe_allow_html=True)
+    cols = st.columns([0.9, 1, 0.8, 1, 1.1])
+
+    button_definitions = [
+        {"icon": "🌡️", "label": "기후변화", "key": "btn_climate_impact", "query": "기후변화가 한국에 미치는 영향은?"},
+        {"icon": "♻️", "label": "탄소중립", "key": "btn_carbon_neutral", "query": "탄소중립이란 무엇인가요?"},
+        {"icon": "🌐", "label": "IPCC", "key": "btn_ipcc", "query": "IPCC란 무엇인가요?"},
+        {"icon": "📊", "label": "온실가스", "key": "btn_emissions", "query": "한국의 온실가스 배출 현황은?"},
+        {"icon": "💪", "label": "실천방법", "key": "btn_personal", "query": "기후변화 대응 방법은?"}
+    ]
+
+    for i, button_def in enumerate(button_definitions):
+        with cols[i]:
+            button_text = f"{button_def['icon']} {button_def['label']}"
+            if st.button(button_text, key=button_def["key"], use_container_width=True):
+                st.session_state.chat_input = button_def["query"]
+                handle_user_input()
+
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    # 검색 입력 필드
+    st.markdown('<div style="display: flex; justify-content: center; width: 100%; margin-top: 20px;">', unsafe_allow_html=True)
+    search_container = st.container()
+    with search_container:
+        st.text_input(
+            "환경, 기후, 지속가능성에 대해 무엇이든 물어보세요",
+            placeholder="🔍 예: 탄소중립이란 무엇인가요?",
+            label_visibility="collapsed",
+            key="chat_input",
+            on_change=handle_user_input
+        )
+    st.markdown('</div>', unsafe_allow_html=True)
+
+elif st.session_state.current_tab == "new":
+    # 새 대화 탭
     st.markdown("""
     <div class="logo-container">
         <div class="logo-text">IM.<span class="logo-highlight">FACT</span><span class="logo-badge">eco</span></div>
     </div>
     <div class="welcome-text">
-        환경, 기후변화, 지속가능성에 관한 신뢰할 수 있는 정보를 제공합니다. 
-        IM.FACT는 IPCC, UN환경계획, 기상청 등의 공식 자료를 기반으로 과학적이고 균형 잡힌 답변을 제공합니다.
-    </div>
-    """, unsafe_allow_html=True)
-
-# 대화 기록 표시
-for message in st.session_state.chat_history:
-    if message["role"] == "user":
-        st.markdown(f"""
-        <div class="imfact-chat-message user">
-            <div class="message-header">
-                <div class="avatar user-avatar">U</div>
-                <span class="name-title">You</span>
-                <span class="time">{message["time"]}</span>
-            </div>
-            <div class="message-content">
-                {message["content"]}
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
-    else:
-        # 소스 표시 준비
-        sources_html = ""
-        if "sources" in message:
-            sources_html = '<div class="source-links">'
-            sources_html += '<span class="source-header">출처</span>'
-            for source in message["sources"]:
-                sources_html += f'<div class="source-link"><span>{source["icon"]}</span> {source["name"]}</div>'
-            sources_html += '</div>'
-        
-        # 특수 태그 변환
-        content = message["content"]
-        content = content.replace("<citation>", '<div class="imfact-citation">').replace("</citation>", '</div>')
-        content = content.replace("<key-fact>", '<span class="key-fact">').replace("</key-fact>", '</span>')
-        content = content.replace("<data-visualization>", '<div class="data-visualization">').replace("</data-visualization>", '</div>')
-        
-        st.markdown(f"""
-        <div class="imfact-chat-message assistant">
-            <div class="message-header">
-                <div class="avatar assistant-avatar">🌍</div>
-                <span class="name-title">IM.FACT</span>
-                <span class="time">{message["time"]}</span>
-            </div>
-            <div class="message-content">
-                {content}
-                {sources_html}
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
-
-# 타이핑 표시기
-if st.session_state.is_typing:
-    st.markdown("""
-    <div class="imfact-chat-message assistant">
-        <div class="message-header">
-            <div class="avatar assistant-avatar">🌍</div>
-            <span class="name-title">IM.FACT</span>
-            <span class="time">응답 작성 중...</span>
-        </div>
-        <div class="typing-indicator">
-            <div class="typing-dot"></div>
-            <div class="typing-dot"></div>
-            <div class="typing-dot"></div>
-        </div>
+        새 대화를 시작합니다. 환경 또는 기후 관련 질문을 입력해주세요.
     </div>
     """, unsafe_allow_html=True)
     
-    # 응답 생성 및 재실행
-    last_question = st.session_state.chat_history[-1]["content"]
-    generate_response(last_question)
-    st.rerun()
+    # 새 대화 버튼
+    st.markdown('<div style="display: flex; justify-content: center; width: 100%; margin-top: 20px;">', unsafe_allow_html=True)
+    if st.button("새 대화 시작", key="new_chat_btn", use_container_width=False):
+        st.session_state.chat_history = []
+        st.rerun()
+    st.markdown('</div>', unsafe_allow_html=True)
 
-# 버튼 컨테이너 (Streamlit 컬럼 기반 - 너비 조정)
-st.markdown('<div class="imfact-button-container">', unsafe_allow_html=True)
-cols = st.columns([0.9, 1, 0.8, 1, 1.1])  # 버튼 텍스트 길이에 맞게 연습적으로 조정
+elif st.session_state.current_tab == "data":
+    # 데이터 탭
+    st.markdown("""
+    <div class="logo-container">
+        <div class="logo-text">기후 <span class="logo-highlight">데이터</span></div>
+    </div>
+    <div class="welcome-text">
+        주요 기후 및 환경 데이터를 시각화하여 제공합니다.
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # 시각화 예시 (간단한 차트)
+    # 여기에 시각화 코드 추가
 
-button_definitions = [
-    {"icon": "🌡️", "label": "기후변화", "key": "btn_climate_impact", "query": "기후변화가 한국에 미치는 영향은?"},
-    {"icon": "♻️", "label": "탄소중립", "key": "btn_carbon_neutral", "query": "탄소중립이란 무엇인가요?"},
-    {"icon": "🌐", "label": "IPCC", "key": "btn_ipcc", "query": "IPCC란 무엇인가요?"},
-    {"icon": "📊", "label": "온실가스", "key": "btn_emissions", "query": "한국의 온실가스 배출 현황은?"},
-    {"icon": "💪", "label": "실천방법", "key": "btn_personal", "query": "기후변화 대응 방법은?"}
-]
+elif st.session_state.current_tab == "sustainability":
+    # 지속가능성 탭 
+    st.markdown("""
+    <div class="logo-container">
+        <div class="logo-text">지속<span class="logo-highlight">가능성</span></div>
+    </div>
+    <div class="welcome-text">
+        지속가능한 미래를 위한 정보와 자원을 제공합니다.
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # 추가 콘텐츠...
 
-for i, button_def in enumerate(button_definitions):
-    with cols[i]:
-        button_text = f"{button_def['icon']} {button_def['label']}"
-        if st.button(button_text, key=button_def["key"], use_container_width=True):
-            st.session_state.chat_input = button_def["query"]
-            handle_user_input()
+elif st.session_state.current_tab == "carbon":
+    # 탄소중립 탭
+    st.markdown("""
+    <div class="logo-container">
+        <div class="logo-text">탄소<span class="logo-highlight">중립</span></div>
+    </div>
+    <div class="welcome-text">
+        탄소중립 달성을 위한 정보와 가이드를 제공합니다.
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # 추가 콘텐츠...
 
-st.markdown('</div>', unsafe_allow_html=True)
-
-# 검색 입력 필드 - 중앙 정렬 개선
-st.markdown('<div style="display: flex; justify-content: center; width: 100%; margin-top: 20px;">', unsafe_allow_html=True)
-search_container = st.container()
-with search_container:
-    # 입력 필드 - 플레이스홀더에 돋보기 아이콘 추가
-    st.text_input(
-        "환경, 기후, 지속가능성에 대해 무엇이든 물어보세요",
-        placeholder="🔍 예: 탄소중립이란 무엇인가요?",
-        label_visibility="collapsed",
-        key="chat_input",
-        on_change=handle_user_input
-    )
-st.markdown('</div>', unsafe_allow_html=True)
+elif st.session_state.current_tab == "user":
+    # 사용자 탭
+    st.markdown("""
+    <div class="logo-container">
+        <div class="logo-text">사용자 <span class="logo-highlight">설정</span></div>
+    </div>
+    <div class="welcome-text">
+        개인 설정 및 대화 기록을 관리합니다.
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # 추가 콘텐츠...
 
 # 푸터
 st.markdown('''
