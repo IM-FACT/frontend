@@ -595,11 +595,15 @@ if 'is_typing' not in st.session_state:
     st.session_state.is_typing = False
 if 'current_tab' not in st.session_state:
     st.session_state.current_tab = "home"  # 기본 탭: 홈
+if 'chat_sessions' not in st.session_state:
+    st.session_state.chat_sessions = {"기본 대화": []}
+if 'current_chat_session' not in st.session_state:
+    st.session_state.current_chat_session = "기본 대화"
 
 # URL 파라미터로 탭 변경 감지
 if "tab" in st.query_params:
     tab_name = st.query_params["tab"]
-    if tab_name in ["home", "new", "data", "sustainability", "carbon", "user"]:
+    if tab_name in ["home", "history", "data", "sustainability", "carbon", "user"]:
         st.session_state.current_tab = tab_name
 
 # 사이드바
@@ -632,11 +636,11 @@ st.markdown(f"""
     <div class="sidebar-icon {st.session_state.current_tab == 'home' and 'active' or ''}">
         <a href="?tab=home" title="홈" target="_self">🌍</a>
     </div>
-    <div class="sidebar-icon {st.session_state.current_tab == 'new' and 'active' or ''}">
-        <a href="?tab=new" title="새 대화" target="_self">+</a>
+    <div class="sidebar-icon {st.session_state.current_tab == 'history' and 'active' or ''}">
+        <a href="?tab=history" title="대화 기록" target="_self">📝</a>
     </div>
     <div class="sidebar-icon {st.session_state.current_tab == 'data' and 'active' or ''}">
-        <a href="?tab=data" title="지구 환경 데이터" target="_self">🔍</a>
+        <a href="?tab=data" title="지구 환경 데이터" target="_self">📊</a>
     </div>
     <div class="sidebar-icon {st.session_state.current_tab == 'sustainability' and 'active' or ''}">
         <a href="?tab=sustainability" title="지속가능성" target="_self">🌐</a>
@@ -645,7 +649,7 @@ st.markdown(f"""
         <a href="?tab=carbon" title="탄소중립" target="_self">♻️</a>
     </div>
     <div class="sidebar-user">
-        <a href="?tab=user" title="사용자 설정" target="_self">U</a>
+        <a href="?tab=user" title="사용자 설정" target="_self">👤</a>
     </div>
 </div>
 """, unsafe_allow_html=True)
@@ -840,22 +844,45 @@ if st.session_state.current_tab == "home":
         )
     st.markdown('</div>', unsafe_allow_html=True)
 
-elif st.session_state.current_tab == "new":
-    # 새 대화 탭
+elif st.session_state.current_tab == "history":
+    # 대화 기록 탭
     st.markdown("""
     <div class="logo-container">
-        <div class="logo-text">IM.<span class="logo-highlight">FACT</span><span class="logo-badge">eco</span></div>
+        <div class="logo-text">대화 <span class="logo-highlight">기록</span></div>
     </div>
     <div class="welcome-text">
-        새 대화를 시작합니다. 환경 또는 기후 관련 질문을 입력해주세요.
+        이전 대화 기록을 확인하고 계속할 수 있습니다.
     </div>
     """, unsafe_allow_html=True)
     
     # 새 대화 버튼
-    st.markdown('<div style="display: flex; justify-content: center; width: 100%; margin-top: 20px;">', unsafe_allow_html=True)
+    st.markdown('<div style="display: flex; justify-content: center; width: 100%; margin-top: 20px; margin-bottom: 30px;">', unsafe_allow_html=True)
     if st.button("새 대화 시작", key="new_chat_btn", use_container_width=False):
-        st.session_state.chat_history = []
+        # 새로운 대화 세션 생성
+        new_session_name = f"대화 {len(st.session_state.chat_sessions) + 1}"
+        st.session_state.chat_sessions[new_session_name] = []
+        st.session_state.current_chat_session = new_session_name
+        st.session_state.current_tab = "home"
         st.rerun()
+    st.markdown('</div>', unsafe_allow_html=True)
+    
+    # 저장된 대화 목록 표시
+    st.markdown('<div class="chat-history-list">', unsafe_allow_html=True)
+    for session_name, session_history in st.session_state.chat_sessions.items():
+        # 각 대화 세션의 첫 번째 메시지나 기본 텍스트 가져오기
+        preview_text = "새 대화"
+        if session_history and len(session_history) > 0:
+            first_user_msg = next((msg for msg in session_history if msg["role"] == "user"), None)
+            if first_user_msg:
+                preview_text = first_user_msg["content"][:30] + "..." if len(first_user_msg["content"]) > 30 else first_user_msg["content"]
+                
+        # 세션별 카드 스타일로 표시
+        st.markdown(f'''
+        <div class="chat-session-card" onclick="window.location.href='?tab=home&session={session_name}'" style="cursor:pointer;">
+            <div class="chat-session-title">{session_name}</div>
+            <div class="chat-session-preview">{preview_text}</div>
+        </div>
+        ''', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
 elif st.session_state.current_tab == "data":
