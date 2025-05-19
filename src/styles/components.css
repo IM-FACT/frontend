@@ -1,0 +1,280 @@
+/* 로고 스타일 */
+.logo-text {
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -1px;
+}
+
+.logo-highlight {
+    background: linear-gradient(135deg, var(--accent-color), var(--accent-color-hover));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 800;
+}
+
+.logo-badge {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 2px 6px;
+    background: linear-gradient(135deg, var(--accent-color), var(--accent-color-hover));
+    border-radius: 4px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    vertical-align: middle;
+    text-transform: uppercase;
+    color: var(--bg-primary);
+    letter-spacing: 0.5px;
+}
+
+/* 채팅 메시지 컨테이너 */
+.imfact-chat-message {
+    width: var(--content-width);
+    max-width: var(--content-max-width);
+    margin-left: auto;
+    margin-right: auto;
+    background-color: var(--bg-secondary);
+    border-radius: 8px;
+    margin-bottom: 16px;
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    border-left: 3px solid transparent;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.imfact-chat-message.user {
+    border-left: 3px solid var(--user-color);
+    background-color: rgba(79, 209, 197, 0.05);
+}
+
+.imfact-chat-message.assistant {
+    border-left: 3px solid var(--assistant-color);
+    background-color: rgba(59, 130, 246, 0.03);
+}
+
+/* 메시지 헤더 및 아바타 */
+.message-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+    width: 100%;
+}
+
+.avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.user-avatar {
+    background: linear-gradient(135deg, var(--user-color), var(--accent-color-hover));
+    color: white;
+    box-shadow: 0 2px 5px rgba(79, 209, 197, 0.4);
+}
+
+.assistant-avatar {
+    background: linear-gradient(135deg, var(--assistant-color), #2563EB);
+    color: white;
+    box-shadow: 0 2px 5px rgba(59, 130, 246, 0.4);
+}
+
+.name-title {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.time {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin-left: auto;
+}
+
+.message-content {
+    width: 100%;
+    line-height: 1.5;
+    padding-left: 5px;
+}
+
+.message-content p {
+    margin-bottom: 12px;
+}
+
+.message-content p:last-child {
+    margin-bottom: 0;
+}
+
+.message-content ul, .message-content ol {
+    margin-top: 8px;
+    margin-bottom: 12px;
+}
+
+.message-content li {
+    margin-bottom: 4px;
+}
+
+/* 인용문 스타일 */
+.imfact-citation {
+    background-color: rgba(79, 209, 197, 0.08);
+    border-left: 3px solid var(--accent-color);
+    padding: 14px 18px;
+    margin: 16px 0;
+    border-radius: 0 8px 8px 0;
+    font-style: italic;
+    position: relative;
+}
+
+.imfact-citation::before {
+    content: '\201C'; /* 열린 따옴표 */
+    font-size: 1.5rem;
+    color: var(--accent-color);
+    position: absolute;
+    left: 5px;
+    top: 5px;
+    opacity: 0.7;
+}
+
+.imfact-citation::after {
+    content: '\201D'; /* 닫힌 따옴표 */
+    font-size: 1.5rem;
+    color: var(--accent-color);
+    position: absolute;
+    right: 10px;
+    bottom: 0;
+    opacity: 0.7;
+}
+
+/* 키 팩트 스타일 */
+.key-fact {
+    background-color: rgba(79, 209, 197, 0.1);
+    border-radius: 4px;
+    padding: 2px 8px;
+    margin: 0 2px;
+    color: var(--accent-color);
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    position: relative;
+}
+
+.key-fact::before {
+    content: '•'; /* 불릿 표시 */
+    margin-right: 5px;
+    font-size: 1.2em;
+    line-height: 0;
+}
+
+/* 소스 링크 */
+.source-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border-color);
+}
+
+.source-link {
+    background-color: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 5px 10px;
+    font-size: 0.8rem;
+    color: rgba(238, 242, 247, 0.8);
+    display: inline-flex;
+    align-items: center;
+    transition: all 0.2s ease;
+}
+
+.source-link:hover {
+    background-color: rgba(79, 209, 197, 0.1);
+    border-color: rgba(79, 209, 197, 0.3);
+}
+
+.source-link span {
+    margin-right: 6px;
+    font-size: 1em;
+}
+
+.source-header {
+    display: block;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.4);
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* 로딩 표시자 */
+.typing-indicator {
+    display: flex;
+    gap: 4px;
+    margin: 8px 0;
+    padding: 8px 4px;
+}
+
+.typing-dot {
+    width: 8px;
+    height: 8px;
+    background-color: var(--accent-color);
+    border-radius: 50%;
+    opacity: 0.6;
+    animation: typing-animation 1.4s infinite ease-in-out;
+}
+
+.typing-dot:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.typing-dot:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.typing-dot:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes typing-animation {
+    0% {
+        transform: scale(1);
+        opacity: 0.6;
+    }
+    50% {
+        transform: scale(1.5);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 0.6;
+    }
+}
+
+/* 데이터 시각화 영역 */
+.data-visualization {
+    background-color: rgba(59, 130, 246, 0.05);
+    border: 1px solid rgba(59, 130, 246, 0.15);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 20px 0;
+    position: relative;
+}
+
+.data-visualization::before {
+    content: '📈 데이터'; /* 차트 아이콘 & 데이터 텍스트 */
+    position: absolute;
+    top: -10px;
+    left: 15px;
+    background-color: #0c1016;
+    padding: 0 8px;
+    font-size: 0.75rem;
+    color: rgba(59, 130, 246, 0.8);
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}

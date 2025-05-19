@@ -1,0 +1,47 @@
+/* 글로벌 스타일 */
+html, body, .main, .stApp {
+    background-color: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+    font-family: var(--font-family);
+}
+
+/* Streamlit 기본 여백 제거 */
+.block-container {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+}
+
+/* 헤더 숨기기 */
+header {
+    visibility: hidden !important;
+    height: 0 !important;
+}
+
+/* 사이드바 햄버거 메뉴 숨기기 */
+.st-emotion-cache-1b32qh4 {
+    visibility: hidden !important;
+}
+
+/* 푸터 숨기기 */
+footer {
+    visibility: hidden !important;
+    height: 0 !important;
+}
+
+/* Streamlit 기본 사이드바 숨기기 */
+[data-testid="stSidebar"] {
+    display: none !important;
+}
+
+/* Streamlit 기본 스타일 오버라이드 */
+.stButton, .stTextInput {
+    width: 100% !important;
+    max-width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+}

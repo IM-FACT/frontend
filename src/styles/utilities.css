@@ -1,0 +1,143 @@
+/* 버튼 스타일 */
+.imfact-button-container [data-testid="stHorizontalBlock"] > div[data-testid="stVerticalBlock"] > div[data-testid="stButton"] > button,
+.stButton > button {
+    background: rgba(20,25,30,0.85) !important;
+    border: 1px solid rgba(255,255,255,0.12) !important;
+    border-radius: var(--border-radius) !important;
+    padding: 10px 2px !important;
+    color: var(--text-primary) !important;
+    font-size: 0.85rem !important;
+    font-weight: 500 !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    white-space: nowrap !important;
+    flex: 1 !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    height: 50px !important;
+    line-height: normal !important;
+    margin: 0 auto !important;
+    overflow: hidden !important;
+}
+.imfact-button-container [data-testid="stHorizontalBlock"] > div[data-testid="stVerticalBlock"] > div[data-testid="stButton"] > button:hover,
+.stButton > button:hover {
+    background: rgba(79,209,197,0.13) !important;
+    color: var(--accent-color) !important;
+    border-color: var(--accent-color) !important;
+}
+
+/* 버튼 클릭시/포커스 상태 스타일 */
+.stButton > button:active, 
+.stButton > button:focus,
+.imfact-button-container [data-testid="stHorizontalBlock"] > div[data-testid="stVerticalBlock"] > div[data-testid="stButton"] > button:active,
+.imfact-button-container [data-testid="stHorizontalBlock"] > div[data-testid="stVerticalBlock"] > div[data-testid="stButton"] > button:focus {
+    background: rgba(79,209,197,0.2) !important;
+    color: var(--accent-color) !important;
+    border-color: var(--accent-color) !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+/* 입력 필드 스타일 */
+.stTextInput > div {
+    background-color: rgba(255, 255, 255, 0.04) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 20px !important;
+    color: var(--text-primary) !important;
+}
+
+.stTextInput > div > div > input {
+    color: var(--text-primary) !important;
+    font-family: var(--font-family) !important;
+}
+
+/* 검색 컨테이너 스타일 */
+.imfact-search-container {
+    position: relative;
+    width: var(--content-width) !important;
+    max-width: var(--content-max-width) !important;
+    margin: 16px auto !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    justify-content: center !important;
+}
+
+.imfact-search-container .stTextInput {
+    width: 100% !important;
+    max-width: var(--content-width) !important;
+    display: flex !important;
+    justify-content: center !important;
+}
+
+.imfact-search-container .stTextInput > div {
+    width: 100% !important;
+    max-width: 100% !important;
+    background-color: rgba(255, 255, 255, 0.04) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: var(--border-radius) !important;
+    color: #eef2f7 !important;
+    padding: 0 15px !important;
+}
+
+/* Streamlit 컬럼 정렬 개선 */
+[data-testid="stHorizontalBlock"] {
+    display: flex !important;
+    justify-content: center !important;
+    gap: 2px !important;
+    width: 100% !important;
+    max-width: var(--content-width) !important;
+    margin: 0 auto !important;
+}
+
+/* 각 컬럼의 너비와 정렬 조정 */
+[data-testid="stHorizontalBlock"] > [data-testid="stVerticalBlock"] {
+    flex: 1 !important;
+    min-width: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+/* 각 버튼 열의 너비 제한 */
+.row-widget.stButton > button {
+    width: 100% !important;
+    margin: 0 auto !important;
+}
+
+/* 채팅 기록 카드 스타일 */
+.chat-history-list {
+    width: var(--content-width);
+    max-width: var(--content-max-width);
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.chat-session-card {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 16px;
+    transition: all 0.2s ease;
+}
+
+.chat-session-card:hover {
+    background-color: rgba(79, 209, 197, 0.05);
+    border-color: rgba(79, 209, 197, 0.2);
+}
+
+.chat-session-title {
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 6px;
+}
+
+.chat-session-preview {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
