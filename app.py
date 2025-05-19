@@ -941,7 +941,7 @@ elif st.session_state.current_tab == "user":
 # 푸터
 st.markdown('''
 <div class="imfact-footer">
-    © 2024 IM.FACT - 환경・기후 전문 어시스턴트 | 데이터 출처: IPCC, 기상청, UN환경계획, NASA
+    © 2025 IM.FACT - 환경・기후 전문 어시스턴트 | 데이터 출처: IPCC, 기상청, UN환경계획, NASA
 </div>
 ''', unsafe_allow_html=True)
 
