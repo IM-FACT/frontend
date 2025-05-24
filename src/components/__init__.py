@@ -1,5 +1,5 @@
 """
-컴포넌트 모듈 초기화 파일
+컨포넌트 모듈 초기화 파일
 """
 from .chat_message import (
     render_chat_message,
@@ -19,6 +19,14 @@ from .quick_buttons import (
     get_category_buttons,
     DEFAULT_QUICK_BUTTONS
 )
+from .welcome import (
+    render_logo,
+    render_welcome_message,
+    render_home_welcome,
+    render_tab_header,
+    render_tab_welcome,
+    TAB_HEADERS
+)
 
 __all__ = [
     'render_chat_message',
@@ -32,5 +40,11 @@ __all__ = [
     'render_quick_buttons',
     'create_custom_quick_button',
     'get_category_buttons',
-    'DEFAULT_QUICK_BUTTONS'
+    'DEFAULT_QUICK_BUTTONS',
+    'render_logo',
+    'render_welcome_message',
+    'render_home_welcome',
+    'render_tab_header',
+    'render_tab_welcome',
+    'TAB_HEADERS'
 ]

@@ -9,7 +9,14 @@ import sys
 # 프로젝트 루트 디렉토리를 PATH에 추가
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from src.utils.css_loader import load_css
-from src.components import render_chat_message, render_typing_indicator, render_sidebar, handle_tab_change, render_quick_buttons
+from src.components import (
+    render_chat_message, 
+    render_typing_indicator, 
+    render_sidebar, 
+    handle_tab_change, 
+    render_quick_buttons,
+    render_tab_welcome
+)
 
 # 환경 변수 로드
 load_dotenv()
@@ -122,15 +129,7 @@ def generate_response(question):
 if st.session_state.current_tab == "home":
     # 로고 및 환영 메시지 (처음 방문 시)
     if len(st.session_state.chat_history) == 0:
-        st.markdown("""
-        <div class="logo-container">
-            <div class="logo-text">IM.<span class="logo-highlight">FACT</span><span class="logo-badge">eco</span></div>
-        </div>
-        <div class="welcome-text">
-            환경, 기후변화, 지속가능성에 관한 신뢰할 수 있는 정보를 제공합니다. 
-            IM.FACT는 IPCC, UN환경계획, 기상청 등의 공식 자료를 기반으로 과학적이고 균형 잡힌 답변을 제공합니다.
-        </div>
-        """, unsafe_allow_html=True)
+        render_tab_welcome("home")
 
     # 대화 기록 표시
     for message in st.session_state.chat_history:
@@ -165,14 +164,7 @@ if st.session_state.current_tab == "home":
 
 elif st.session_state.current_tab == "history":
     # 대화 기록 탭
-    st.markdown("""
-    <div class="logo-container">
-        <div class="logo-text">대화 <span class="logo-highlight">기록</span></div>
-    </div>
-    <div class="welcome-text">
-        이전 대화 기록을 확인하고 계속할 수 있습니다.
-    </div>
-    """, unsafe_allow_html=True)
+    render_tab_welcome("history")
     
     # 새 대화 버튼
     st.markdown('<div style="display: flex; justify-content: center; width: 100%; margin-top: 20px; margin-bottom: 30px;">', unsafe_allow_html=True)
@@ -206,54 +198,26 @@ elif st.session_state.current_tab == "history":
 
 elif st.session_state.current_tab == "data":
     # 데이터 탭
-    st.markdown("""
-    <div class="logo-container">
-        <div class="logo-text">기후 <span class="logo-highlight">데이터</span></div>
-    </div>
-    <div class="welcome-text">
-        주요 기후 및 환경 데이터를 시각화하여 제공합니다.
-    </div>
-    """, unsafe_allow_html=True)
+    render_tab_welcome("data")
     
     # 시각화 예시 (간단한 차트)
     # 여기에 시각화 코드 추가
 
 elif st.session_state.current_tab == "sustainability":
     # 지속가능성 탭 
-    st.markdown("""
-    <div class="logo-container">
-        <div class="logo-text">지속<span class="logo-highlight">가능성</span></div>
-    </div>
-    <div class="welcome-text">
-        지속가능한 미래를 위한 정보와 자원을 제공합니다.
-    </div>
-    """, unsafe_allow_html=True)
+    render_tab_welcome("sustainability")
     
     # 추가 콘텐츠...
 
 elif st.session_state.current_tab == "carbon":
     # 탄소중립 탭
-    st.markdown("""
-    <div class="logo-container">
-        <div class="logo-text">탄소<span class="logo-highlight">중립</span></div>
-    </div>
-    <div class="welcome-text">
-        탄소중립 달성을 위한 정보와 가이드를 제공합니다.
-    </div>
-    """, unsafe_allow_html=True)
+    render_tab_welcome("carbon")
     
     # 추가 콘텐츠...
 
 elif st.session_state.current_tab == "user":
     # 사용자 탭
-    st.markdown("""
-    <div class="logo-container">
-        <div class="logo-text">사용자 <span class="logo-highlight">설정</span></div>
-    </div>
-    <div class="welcome-text">
-        개인 설정 및 대화 기록을 관리합니다.
-    </div>
-    """, unsafe_allow_html=True)
+    render_tab_welcome("user")
     
     # 추가 콘텐츠...
 
