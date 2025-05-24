@@ -37,6 +37,9 @@ new_tab = handle_tab_change()
 if new_tab:
     st.session_state.current_tab = new_tab
 
+# 디버깅: 현재 탭 확인
+# st.write(f"Debug - Current tab: {st.session_state.current_tab}")
+
 # 사이드바 렌더링
 render_sidebar()
 

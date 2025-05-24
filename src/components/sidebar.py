@@ -36,20 +36,19 @@ def get_sidebar_html(current_tab: str) -> str:
     
     # 상단 아이템들
     for item in top_items:
-        active_class = "active" if current_tab == item["id"] else ""
-        html += f'''
-        <div class="sidebar-icon {active_class}">
-            <a href="?tab={item["id"]}" title="{item["title"]}" target="_self">{item["icon"]}</a>
-        </div>
-        '''
+        is_active = current_tab == item["id"]
+        active_class = "active" if is_active else ""
+        html += f'<div class="sidebar-icon {active_class}">'
+        html += f'<a href="?tab={item["id"]}" title="{item["title"]}" target="_self">{item["icon"]}</a>'
+        html += '</div>'
     
     # 하단 아이템들 (사용자 설정)
     for item in bottom_items:
-        html += f'''
-        <div class="sidebar-user">
-            <a href="?tab={item["id"]}" title="{item["title"]}" target="_self">{item["icon"]}</a>
-        </div>
-        '''
+        is_active = current_tab == item["id"]
+        active_class = "active" if is_active else ""
+        html += f'<div class="sidebar-user {active_class}">'
+        html += f'<a href="?tab={item["id"]}" title="{item["title"]}" target="_self">{item["icon"]}</a>'
+        html += '</div>'
     
     html += '</div>'
     return html
@@ -61,6 +60,8 @@ def render_sidebar() -> None:
     세션 상태에서 current_tab을 읽어 활성 상태를 표시합니다.
     """
     current_tab = st.session_state.get("current_tab", "home")
+    # 디버깅을 위해 현재 탭 출력
+    # st.write(f"Current tab: {current_tab}")
     sidebar_html = get_sidebar_html(current_tab)
     st.markdown(sidebar_html, unsafe_allow_html=True)
 
