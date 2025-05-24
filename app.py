@@ -9,6 +9,7 @@ import sys
 # 프로젝트 루트 디렉토리를 PATH에 추가
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from src.utils.css_loader import load_css
+from src.components import render_chat_message, render_typing_indicator
 
 # 환경 변수 로드
 load_dotenv()
@@ -156,65 +157,11 @@ if st.session_state.current_tab == "home":
 
     # 대화 기록 표시
     for message in st.session_state.chat_history:
-        if message["role"] == "user":
-            st.markdown(f"""
-            <div class="imfact-chat-message user">
-                <div class="message-header">
-                    <div class="avatar user-avatar">U</div>
-                    <span class="name-title">You</span>
-                    <span class="time">{message["time"]}</span>
-                </div>
-                <div class="message-content">
-                    {message["content"]}
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
-        else:
-            # 소스 표시 준비
-            sources_html = ""
-            if "sources" in message:
-                sources_html = '<div class="source-links">'
-                sources_html += '<span class="source-header">출처</span>'
-                for source in message["sources"]:
-                    sources_html += f'<div class="source-link"><span>{source["icon"]}</span> {source["name"]}</div>'
-                sources_html += '</div>'
-            
-            # 특수 태그 변환
-            content = message["content"]
-            content = content.replace("<citation>", '<div class="imfact-citation">').replace("</citation>", '</div>')
-            content = content.replace("<key-fact>", '<span class="key-fact">').replace("</key-fact>", '</span>')
-            content = content.replace("<data-visualization>", '<div class="data-visualization">').replace("</data-visualization>", '</div>')
-            
-            st.markdown(f"""
-            <div class="imfact-chat-message assistant">
-                <div class="message-header">
-                    <div class="avatar assistant-avatar">🌍</div>
-                    <span class="name-title">IM.FACT</span>
-                    <span class="time">{message["time"]}</span>
-                </div>
-                <div class="message-content">
-                    {content}
-                    {sources_html}
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
+        render_chat_message(message)
 
     # 타이핑 표시기
     if st.session_state.is_typing:
-        st.markdown("""
-        <div class="imfact-chat-message assistant">
-            <div class="message-header">
-                <div class="avatar assistant-avatar">🌍</div>
-                <span class="name-title">IM.FACT</span>
-                <span class="time">응답 작성 중...</span>
-            </div>
-            <div class="typing-indicator">
-                <div class="typing-dot"></div>
-                <div class="typing-dot"></div>
-                <div class="typing-dot"></div>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
+        render_typing_indicator()
         
         # 응답 생성 및 재실행
         last_question = st.session_state.chat_history[-1]["content"]
