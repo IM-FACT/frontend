@@ -9,7 +9,7 @@ import sys
 # 프로젝트 루트 디렉토리를 PATH에 추가
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from src.utils.css_loader import load_css
-from src.components import render_chat_message, render_typing_indicator
+from src.components import render_chat_message, render_typing_indicator, render_sidebar, handle_tab_change
 
 # 환경 변수 로드
 load_dotenv()
@@ -33,37 +33,11 @@ if 'current_chat_session' not in st.session_state:
     st.session_state.current_chat_session = "기본 대화"
 
 # URL 파라미터로 탭 변경 감지
-if "tab" in st.query_params:
-    tab_name = st.query_params["tab"]
-    if tab_name in ["home", "history", "data", "sustainability", "carbon", "user"]:
-        st.session_state.current_tab = tab_name
+new_tab = handle_tab_change()
+if new_tab:
+    st.session_state.current_tab = new_tab
 
 # 사이드바 렌더링
-def render_sidebar():
-    sidebar_html = f"""
-    <div class="sidebar">
-        <div class="sidebar-icon {st.session_state.current_tab == 'home' and 'active' or ''}">
-            <a href="?tab=home" title="홈" target="_self">🌍</a>
-        </div>
-        <div class="sidebar-icon {st.session_state.current_tab == 'history' and 'active' or ''}">
-            <a href="?tab=history" title="대화 기록" target="_self">📝</a>
-        </div>
-        <div class="sidebar-icon {st.session_state.current_tab == 'data' and 'active' or ''}">
-            <a href="?tab=data" title="지구 환경 데이터" target="_self">📊</a>
-        </div>
-        <div class="sidebar-icon {st.session_state.current_tab == 'sustainability' and 'active' or ''}">
-            <a href="?tab=sustainability" title="지속가능성" target="_self">🌐</a>
-        </div>
-        <div class="sidebar-icon {st.session_state.current_tab == 'carbon' and 'active' or ''}">
-            <a href="?tab=carbon" title="탄소중립" target="_self">♻️</a>
-        </div>
-        <div class="sidebar-user">
-            <a href="?tab=user" title="사용자 설정" target="_self">👤</a>
-        </div>
-    </div>
-    """
-    st.markdown(sidebar_html, unsafe_allow_html=True)
-
 render_sidebar()
 
 # 메인 콘텐츠
