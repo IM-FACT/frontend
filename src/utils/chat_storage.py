@@ -237,60 +237,7 @@ class ChatStorage:
         
         return matching_sessions
     
-    def export_session(self, session_id: str, format: str = 'json') -> Optional[str]:
-        """
-        세션을 파일로 내보내기
-        
-        Args:
-            session_id: 세션 ID
-            format: 내보내기 형식 ('json' 또는 'txt')
-            
-        Returns:
-            내보낸 파일 경로 또는 None
-        """
-        session = self.get_session(session_id)
-        if not session:
-            return None
-        
-        messages = self.get_messages(session_id)
-        
-        export_dir = self.storage_path / "exports"
-        export_dir.mkdir(exist_ok=True)
-        
-        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-        
-        if format == 'json':
-            export_file = export_dir / f"chat_{session_id}_{timestamp}.json"
-            export_data = {
-                "session": session,
-                "messages": messages
-            }
-            with open(export_file, 'w', encoding='utf-8') as f:
-                json.dump(export_data, f, ensure_ascii=False, indent=2)
-        
-        elif format == 'txt':
-            export_file = export_dir / f"chat_{session_id}_{timestamp}.txt"
-            with open(export_file, 'w', encoding='utf-8') as f:
-                f.write(f"채팅 기록: {session['title']}\n")
-                f.write(f"생성일: {session['created_at']}\n")
-                f.write(f"{'='*50}\n\n")
-                
-                for msg in messages:
-                    role = "사용자" if msg['role'] == 'user' else "IM.FACT"
-                    f.write(f"[{msg['time']}] {role}:\n")
-                    f.write(f"{msg['content']}\n")
-                    
-                    if msg['role'] == 'assistant' and 'sources' in msg:
-                        f.write("\n출처:\n")
-                        for source in msg['sources']:
-                            f.write(f"  - {source['icon']} {source['name']}\n")
-                    
-                    f.write(f"\n{'-'*30}\n\n")
-        
-        else:
-            return None
-        
-        return str(export_file)
+
 
 
 # 싱글톤 인스턴스

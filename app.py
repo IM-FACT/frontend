@@ -9,6 +9,7 @@ import sys
 # 프로젝트 루트 디렉토리를 PATH에 추가
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from src.utils.css_loader import load_css
+from src.utils.chat_storage import chat_storage
 from src.components import (
     render_chat_message, 
     render_typing_indicator, 
@@ -34,10 +35,17 @@ if 'is_typing' not in st.session_state:
     st.session_state.is_typing = False
 if 'current_tab' not in st.session_state:
     st.session_state.current_tab = "home"  # 기본 탭: 홈
-if 'chat_sessions' not in st.session_state:
-    st.session_state.chat_sessions = {"기본 대화": []}
-if 'current_chat_session' not in st.session_state:
-    st.session_state.current_chat_session = "기본 대화"
+if 'current_session_id' not in st.session_state:
+    # 기존 세션이 있으면 가장 최근 세션, 없으면 새 세션 생성
+    sessions = chat_storage.get_all_sessions()
+    if sessions:
+        st.session_state.current_session_id = sessions[0]['id']
+        # 기존 메시지 로드
+        st.session_state.chat_history = chat_storage.get_messages(sessions[0]['id'])
+    else:
+        st.session_state.current_session_id = chat_storage.create_session("새 대화")
+if 'sessions_list' not in st.session_state:
+    st.session_state.sessions_list = chat_storage.get_all_sessions()
 
 # URL 파라미터로 탭 변경 감지
 new_tab = handle_tab_change()
@@ -58,11 +66,16 @@ def handle_user_input():
     user_input = st.session_state.chat_input
     if user_input:
         now = datetime.now().strftime("%H:%M")
-        st.session_state.chat_history.append({
+        message = {
             "role": "user",
             "content": user_input,
             "time": now
-        })
+        }
+        st.session_state.chat_history.append(message)
+        
+        # 메시지 저장
+        chat_storage.save_message(st.session_state.current_session_id, message)
+        
         st.session_state.chat_input = ""  # 입력 필드 초기화
         st.session_state.is_typing = True
         st.rerun()
@@ -123,6 +136,10 @@ def generate_response(question):
     
     # 채팅 기록에 응답 추가
     st.session_state.chat_history.append(answer)
+    
+    # 응답 저장
+    chat_storage.save_message(st.session_state.current_session_id, answer)
+    
     st.session_state.is_typing = False
 
 # 탭별 콘텐츠 표시
@@ -166,35 +183,71 @@ elif st.session_state.current_tab == "history":
     # 대화 기록 탭
     render_tab_welcome("history")
     
-    # 새 대화 버튼
-    st.markdown('<div style="display: flex; justify-content: center; width: 100%; margin-top: 20px; margin-bottom: 30px;">', unsafe_allow_html=True)
-    if st.button("새 대화 시작", key="new_chat_btn", use_container_width=False):
-        # 새로운 대화 세션 생성
-        new_session_name = f"대화 {len(st.session_state.chat_sessions) + 1}"
-        st.session_state.chat_sessions[new_session_name] = []
-        st.session_state.current_chat_session = new_session_name
-        st.session_state.current_tab = "home"
-        st.rerun()
-    st.markdown('</div>', unsafe_allow_html=True)
+    # 검색 바
+    col1, col2 = st.columns([3, 1])
+    with col1:
+        search_query = st.text_input(
+            "대화 검색",
+            placeholder="🔍 대화 내용 검색...",
+            key="search_history",
+            label_visibility="collapsed"
+        )
+    with col2:
+        if st.button("새 대화", key="new_chat_btn", use_container_width=True):
+            # 새로운 대화 세션 생성
+            new_session_id = chat_storage.create_session()
+            st.session_state.current_session_id = new_session_id
+            st.session_state.chat_history = []
+            st.session_state.current_tab = "home"
+            # 세션 목록 업데이트
+            st.session_state.sessions_list = chat_storage.get_all_sessions()
+            st.rerun()
+    
+    # 대화 목록 가져오기
+    if search_query:
+        sessions = chat_storage.search_sessions(search_query)
+    else:
+        sessions = chat_storage.get_all_sessions()
     
     # 저장된 대화 목록 표시
-    st.markdown('<div class="chat-history-list">', unsafe_allow_html=True)
-    for session_name, session_history in st.session_state.chat_sessions.items():
-        # 각 대화 세션의 첫 번째 메시지나 기본 텍스트 가져오기
-        preview_text = "새 대화"
-        if session_history and len(session_history) > 0:
-            first_user_msg = next((msg for msg in session_history if msg["role"] == "user"), None)
-            if first_user_msg:
-                preview_text = first_user_msg["content"][:30] + "..." if len(first_user_msg["content"]) > 30 else first_user_msg["content"]
+    if sessions:
+        for session in sessions:
+            col1, col2 = st.columns([8, 1])
+            
+            with col1:
+                # 세션 카드
+                preview_text = session.get('first_message', '새 대화') or '새 대화'
+                if len(preview_text) > 50:
+                    preview_text = preview_text[:50] + "..."
                 
-        # 세션별 카드 스타일로 표시
-        st.markdown(f'''
-        <div class="chat-session-card" onclick="window.location.href='?tab=home&session={session_name}'" style="cursor:pointer;">
-            <div class="chat-session-title">{session_name}</div>
-            <div class="chat-session-preview">{preview_text}</div>
-        </div>
-        ''', unsafe_allow_html=True)
-    st.markdown('</div>', unsafe_allow_html=True)
+                # 세션 선택 버튼
+                if st.button(
+                    f"📝 {session['title']}\n{preview_text}\n💬 {session['message_count']}개 메시지 · 📅 {session['updated_at'][:10]}",
+                    key=f"session_{session['id']}",
+                    use_container_width=True
+                ):
+                    # 세션 로드
+                    st.session_state.current_session_id = session['id']
+                    st.session_state.chat_history = chat_storage.get_messages(session['id'])
+                    st.session_state.current_tab = "home"
+                    st.rerun()
+            
+            with col2:
+                # 삭제 버튼
+                if st.button("🗑️", key=f"delete_{session['id']}", help="대화 삭제"):
+                    if chat_storage.delete_session(session['id']):
+                        st.session_state.sessions_list = chat_storage.get_all_sessions()
+                        # 현재 세션이 삭제된 경우 새 세션 생성
+                        if st.session_state.current_session_id == session['id']:
+                            if st.session_state.sessions_list:
+                                st.session_state.current_session_id = st.session_state.sessions_list[0]['id']
+                                st.session_state.chat_history = chat_storage.get_messages(st.session_state.current_session_id)
+                            else:
+                                st.session_state.current_session_id = chat_storage.create_session("새 대화")
+                                st.session_state.chat_history = []
+                        st.rerun()
+    else:
+        st.info("저장된 대화가 없습니다. 새 대화를 시작해보세요!")
 
 elif st.session_state.current_tab == "data":
     # 데이터 탭

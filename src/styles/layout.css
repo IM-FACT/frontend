@@ -95,6 +95,60 @@
     font-size: 0.8rem;
 }
 
+/* 대화 기록 탭 스타일 */
+.chat-history-container {
+    width: var(--content-width);
+    max-width: var(--content-max-width);
+    margin: 0 auto;
+}
+
+.chat-session-card {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 12px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.chat-session-card:hover {
+    background-color: rgba(79, 209, 197, 0.05);
+    border-color: rgba(79, 209, 197, 0.3);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(79, 209, 197, 0.15);
+}
+
+.chat-session-title {
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.chat-session-preview {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.4;
+    margin-bottom: 8px;
+}
+
+.chat-session-meta {
+    display: flex;
+    gap: 16px;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.chat-session-meta span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
 /* 로고 및 환영 영역 */
 .logo-container {
     text-align: center;
