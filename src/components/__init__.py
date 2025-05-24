@@ -13,6 +13,12 @@ from .sidebar import (
     get_tab_info,
     SIDEBAR_ITEMS
 )
+from .quick_buttons import (
+    render_quick_buttons,
+    create_custom_quick_button,
+    get_category_buttons,
+    DEFAULT_QUICK_BUTTONS
+)
 
 __all__ = [
     'render_chat_message',
@@ -22,5 +28,9 @@ __all__ = [
     'render_sidebar',
     'handle_tab_change',
     'get_tab_info',
-    'SIDEBAR_ITEMS'
+    'SIDEBAR_ITEMS',
+    'render_quick_buttons',
+    'create_custom_quick_button',
+    'get_category_buttons',
+    'DEFAULT_QUICK_BUTTONS'
 ]

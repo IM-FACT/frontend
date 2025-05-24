@@ -9,7 +9,7 @@ import sys
 # 프로젝트 루트 디렉토리를 PATH에 추가
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from src.utils.css_loader import load_css
-from src.components import render_chat_message, render_typing_indicator, render_sidebar, handle_tab_change
+from src.components import render_chat_message, render_typing_indicator, render_sidebar, handle_tab_change, render_quick_buttons
 
 # 환경 변수 로드
 load_dotenv()
@@ -142,26 +142,10 @@ if st.session_state.current_tab == "home":
         generate_response(last_question)
         st.rerun()
 
-    # 버튼 컨테이너
-    st.markdown('<div class="imfact-button-container">', unsafe_allow_html=True)
-    cols = st.columns([0.9, 1, 0.8, 1, 1.1])
-
-    button_definitions = [
-        {"icon": "🌡️", "label": "기후변화", "key": "btn_climate_impact", "query": "기후변화가 한국에 미치는 영향은?"},
-        {"icon": "♻️", "label": "탄소중립", "key": "btn_carbon_neutral", "query": "탄소중립이란 무엇인가요?"},
-        {"icon": "🌐", "label": "IPCC", "key": "btn_ipcc", "query": "IPCC란 무엇인가요?"},
-        {"icon": "📊", "label": "온실가스", "key": "btn_emissions", "query": "한국의 온실가스 배출 현황은?"},
-        {"icon": "💪", "label": "실천방법", "key": "btn_personal", "query": "기후변화 대응 방법은?"}
-    ]
-
-    for i, button_def in enumerate(button_definitions):
-        with cols[i]:
-            button_text = f"{button_def['icon']} {button_def['label']}"
-            if st.button(button_text, key=button_def["key"], use_container_width=True):
-                st.session_state.chat_input = button_def["query"]
-                handle_user_input()
-
-    st.markdown('</div>', unsafe_allow_html=True)
+    # 빠른 질문 버튼 렌더링
+    # handle_user_input 함수를 세션 상태에 저장하여 컨포넌트에서 사용 가능하게 함
+    st.session_state.handle_user_input = handle_user_input
+    render_quick_buttons()
 
     # 검색 입력 필드
     st.markdown('<div style="display: flex; justify-content: center; width: 100%; margin-top: 20px;">', unsafe_allow_html=True)
