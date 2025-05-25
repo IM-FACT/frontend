@@ -35,18 +35,19 @@ class UserSettings:
                 "auto_save": True,
                 "show_sources": True,
                 "show_timestamps": True
-            },
-            "notifications": {
-                "email_notifications": False,
-                "email": "",
-                "daily_digest": False,
-                "weekly_report": False
-            },
-            "api": {
-                "custom_api_endpoint": "",
-                "api_key": "",
-                "use_custom_api": False
             }
+            # 추후 확장 가능한 설정들
+            # "notifications": {
+            #     "email_notifications": False,
+            #     "email": "",
+            #     "daily_digest": False,
+            #     "weekly_report": False
+            # },
+            # "api": {
+            #     "custom_api_endpoint": "",
+            #     "api_key": "",
+            #     "use_custom_api": False
+            # }
         }
         
         # 설정 초기화
@@ -152,37 +153,38 @@ class UserSettings:
         self._save_settings(settings)
         return True
     
-    def reset_settings(self) -> None:
-        """설정을 기본값으로 초기화"""
-        self._save_settings(self.default_settings)
-    
-    def export_settings(self) -> str:
-        """설정을 JSON 문자열로 내보내기"""
-        settings = self._load_settings()
-        return json.dumps(settings, ensure_ascii=False, indent=2)
-    
-    def import_settings(self, settings_json: str) -> bool:
-        """
-        JSON 문자열에서 설정 가져오기
-        
-        Args:
-            settings_json: JSON 형식의 설정 문자열
-            
-        Returns:
-            성공 여부
-        """
-        try:
-            new_settings = json.loads(settings_json)
-            # 유효성 검사
-            if not isinstance(new_settings, dict):
-                return False
-            
-            # 기본값과 병합
-            merged_settings = self._merge_with_defaults(new_settings)
-            self._save_settings(merged_settings)
-            return True
-        except json.JSONDecodeError:
-            return False
+    # 다음 메서드들은 필요시 활성화 가능
+    # def reset_settings(self) -> None:
+    #     """설정을 기본값으로 초기화"""
+    #     self._save_settings(self.default_settings)
+    # 
+    # def export_settings(self) -> str:
+    #     """설정을 JSON 문자열로 내보내기"""
+    #     settings = self._load_settings()
+    #     return json.dumps(settings, ensure_ascii=False, indent=2)
+    # 
+    # def import_settings(self, settings_json: str) -> bool:
+    #     """
+    #     JSON 문자열에서 설정 가져오기
+    #     
+    #     Args:
+    #         settings_json: JSON 형식의 설정 문자열
+    #         
+    #     Returns:
+    #         성공 여부
+    #     """
+    #     try:
+    #         new_settings = json.loads(settings_json)
+    #         # 유효성 검사
+    #         if not isinstance(new_settings, dict):
+    #             return False
+    #         
+    #         # 기본값과 병합
+    #         merged_settings = self._merge_with_defaults(new_settings)
+    #         self._save_settings(merged_settings)
+    #         return True
+    #     except json.JSONDecodeError:
+    #         return False
 
 
 # 싱글톤 인스턴스

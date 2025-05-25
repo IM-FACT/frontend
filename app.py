@@ -313,294 +313,108 @@ elif st.session_state.current_tab == "user":
     # 현재 설정 로드
     settings = user_settings.get_all_settings()
     
-    # 탭 메뉴
-    setting_tabs = st.tabs(["👤 프로필", "⚙️ 환경설정", "🔔 알림", "🔑 API 설정"])
+    st.markdown("### 프로필 설정")
     
-    # 프로필 탭
-    with setting_tabs[0]:
-        st.markdown("### 프로필 설정")
-        
-        col1, col2 = st.columns([1, 3])
-        
-        with col1:
-            # 아바타 이모지 선택
-            avatar_options = ["👤", "🌱", "🌍", "🌿", "🌊", "☀️", "🌳", "🦋", "🐧", "🐢"]
-            current_avatar = settings["profile"]["avatar_emoji"]
-            
-            st.markdown("**아바타**")
-            selected_avatar = st.selectbox(
-                "아바타 선택",
-                options=avatar_options,
-                index=avatar_options.index(current_avatar) if current_avatar in avatar_options else 0,
-                key="avatar_select",
-                label_visibility="collapsed"
-            )
-            
-            # 선택된 아바타 미리보기
-            st.markdown(f"<div style='text-align: center; font-size: 60px; margin: 20px;'>{selected_avatar}</div>", unsafe_allow_html=True)
-        
-        with col2:
-            # 닉네임
-            nickname = st.text_input(
-                "닉네임",
-                value=settings["profile"]["nickname"],
-                key="nickname_input",
-                placeholder="닉네임을 입력하세요"
-            )
-            
-            # 자기소개
-            bio = st.text_area(
-                "자기소개",
-                value=settings["profile"]["bio"],
-                key="bio_input",
-                placeholder="환경에 관심이 있는 이유나 목표를 공유해주세요",
-                height=100
-            )
-            
-            # 프로필 저장 버튼
-            if st.button("프로필 저장", key="save_profile", type="primary"):
-                user_settings.update_category("profile", {
-                    "nickname": nickname,
-                    "bio": bio,
-                    "avatar_emoji": selected_avatar
-                })
-                st.success("프로필이 저장되었습니다!")
-    
-    # 환경설정 탭
-    with setting_tabs[1]:
-        st.markdown("### 환경설정")
-        
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            # 테마 설정
-            st.markdown("**테마**")
-            theme = st.radio(
-                "테마 선택",
-                options=["light", "dark"],
-                format_func=lambda x: "🌞 라이트 모드" if x == "light" else "🌙 다크 모드",
-                index=0 if settings["preferences"]["theme"] == "light" else 1,
-                key="theme_radio",
-                label_visibility="collapsed"
-            )
-            
-            # 언어 설정
-            st.markdown("**언어**")
-            language = st.selectbox(
-                "언어 선택",
-                options=["ko", "en"],
-                format_func=lambda x: "🇰🇷 한국어" if x == "ko" else "🇺🇸 English",
-                index=0 if settings["preferences"]["language"] == "ko" else 1,
-                key="language_select",
-                label_visibility="collapsed"
-            )
-            
-            # 글자 크기
-            st.markdown("**글자 크기**")
-            font_size = st.select_slider(
-                "글자 크기",
-                options=["small", "medium", "large"],
-                format_func=lambda x: {"small": "작게", "medium": "보통", "large": "크게"}[x],
-                value=settings["preferences"]["font_size"],
-                key="font_size_slider",
-                label_visibility="collapsed"
-            )
-        
-        with col2:
-            # 응답 스타일
-            st.markdown("**응답 스타일**")
-            response_style = st.radio(
-                "응답 스타일",
-                options=["simple", "detailed", "academic"],
-                format_func=lambda x: {
-                    "simple": "🎯 간단명료",
-                    "detailed": "📋 상세설명",
-                    "academic": "🎓 학술적"
-                }[x],
-                index=["simple", "detailed", "academic"].index(settings["preferences"]["response_style"]),
-                key="response_style_radio",
-                label_visibility="collapsed"
-            )
-            
-            # 기타 설정
-            st.markdown("**기타 설정**")
-            auto_save = st.checkbox(
-                "대화 자동 저장",
-                value=settings["preferences"]["auto_save"],
-                key="auto_save_check"
-            )
-            
-            show_sources = st.checkbox(
-                "출처 표시",
-                value=settings["preferences"]["show_sources"],
-                key="show_sources_check"
-            )
-            
-            show_timestamps = st.checkbox(
-                "시간 표시",
-                value=settings["preferences"]["show_timestamps"],
-                key="show_timestamps_check"
-            )
-        
-        # 환경설정 저장 버튼
-        if st.button("환경설정 저장", key="save_preferences", type="primary"):
-            user_settings.update_category("preferences", {
-                "theme": theme,
-                "language": language,
-                "font_size": font_size,
-                "response_style": response_style,
-                "auto_save": auto_save,
-                "show_sources": show_sources,
-                "show_timestamps": show_timestamps
-            })
-            st.success("환경설정이 저장되었습니다!")
-            st.info("일부 설정은 새로고침 후 적용됩니다.")
-    
-    # 알림 탭
-    with setting_tabs[2]:
-        st.markdown("### 알림 설정")
-        
-        # 이메일 알림
-        email_notifications = st.checkbox(
-            "이메일 알림 활성화",
-            value=settings["notifications"]["email_notifications"],
-            key="email_notifications_check"
-        )
-        
-        if email_notifications:
-            # 이메일 주소
-            email = st.text_input(
-                "이메일 주소",
-                value=settings["notifications"]["email"],
-                key="email_input",
-                placeholder="your@email.com"
-            )
-            
-            # 알림 옵션
-            col1, col2 = st.columns(2)
-            
-            with col1:
-                daily_digest = st.checkbox(
-                    "일일 요약 받기",
-                    value=settings["notifications"]["daily_digest"],
-                    key="daily_digest_check",
-                    help="매일 환경 뉴스 요약을 받습니다"
-                )
-            
-            with col2:
-                weekly_report = st.checkbox(
-                    "주간 리포트 받기",
-                    value=settings["notifications"]["weekly_report"],
-                    key="weekly_report_check",
-                    help="주간 환경 동향 리포트를 받습니다"
-                )
-        else:
-            email = settings["notifications"]["email"]
-            daily_digest = False
-            weekly_report = False
-        
-        # 알림 설정 저장 버튼
-        if st.button("알림 설정 저장", key="save_notifications", type="primary"):
-            user_settings.update_category("notifications", {
-                "email_notifications": email_notifications,
-                "email": email,
-                "daily_digest": daily_digest,
-                "weekly_report": weekly_report
-            })
-            st.success("알림 설정이 저장되었습니다!")
-    
-    # API 설정 탭
-    with setting_tabs[3]:
-        st.markdown("### API 설정")
-        
-        # 커스텀 API 사용
-        use_custom_api = st.checkbox(
-            "커스텀 API 사용",
-            value=settings["api"]["use_custom_api"],
-            key="use_custom_api_check",
-            help="자체 API 엔드포인트를 사용합니다"
-        )
-        
-        if use_custom_api:
-            # API 엔드포인트
-            api_endpoint = st.text_input(
-                "API 엔드포인트",
-                value=settings["api"]["custom_api_endpoint"],
-                key="api_endpoint_input",
-                placeholder="https://your-api.com/v1"
-            )
-            
-            # API 키
-            api_key = st.text_input(
-                "API 키",
-                value=settings["api"]["api_key"],
-                key="api_key_input",
-                type="password",
-                placeholder="sk-..."
-            )
-            
-            # API 테스트 버튼
-            if st.button("API 연결 테스트", key="test_api"):
-                if api_endpoint and api_key:
-                    # 실제로는 API 테스트 로직 구현
-                    st.info("API 연결 테스트 기능은 백엔드 통합 후 사용 가능합니다.")
-                else:
-                    st.error("API 엔드포인트와 키를 입력해주세요.")
-        else:
-            api_endpoint = ""
-            api_key = ""
-        
-        # API 설정 저장 버튼
-        if st.button("API 설정 저장", key="save_api", type="primary"):
-            user_settings.update_category("api", {
-                "use_custom_api": use_custom_api,
-                "custom_api_endpoint": api_endpoint,
-                "api_key": api_key
-            })
-            st.success("API 설정이 저장되었습니다!")
-    
-    # 추가 기능 섹션
-    st.markdown("---")
-    st.markdown("### 추가 기능")
-    
-    col1, col2, col3 = st.columns(3)
+    col1, col2 = st.columns([1, 3])
     
     with col1:
-        # 설정 내보내기
-        if st.button("📤 설정 내보내기", key="export_settings", use_container_width=True):
-            settings_json = user_settings.export_settings()
-            st.download_button(
-                label="설정 파일 다운로드",
-                data=settings_json,
-                file_name="imfact_settings.json",
-                mime="application/json",
-                key="download_settings"
-            )
-    
-    with col2:
-        # 설정 가져오기
-        uploaded_file = st.file_uploader(
-            "설정 가져오기",
-            type=["json"],
-            key="import_settings",
+        # 아바타 이모지 선택
+        avatar_options = ["👤", "🌱", "🌍", "🌿", "🌊", "☀️", "🌳", "🦋", "🐧", "🐢"]
+        current_avatar = settings["profile"]["avatar_emoji"]
+        
+        st.markdown("**아바타**")
+        selected_avatar = st.selectbox(
+            "아바타 선택",
+            options=avatar_options,
+            index=avatar_options.index(current_avatar) if current_avatar in avatar_options else 0,
+            key="avatar_select",
             label_visibility="collapsed"
         )
         
-        if uploaded_file is not None:
-            settings_content = uploaded_file.read().decode("utf-8")
-            if user_settings.import_settings(settings_content):
-                st.success("설정을 성공적으로 가져왔습니다!")
-                st.rerun()
-            else:
-                st.error("설정 파일이 올바르지 않습니다.")
+        # 선택된 아바타 미리보기
+        st.markdown(f"<div style='text-align: center; font-size: 60px; margin: 20px;'>{selected_avatar}</div>", unsafe_allow_html=True)
     
-    with col3:
-        # 설정 초기화
-        if st.button("🔄 설정 초기화", key="reset_settings", use_container_width=True):
-            if st.button("정말 초기화하시겠습니까?", key="confirm_reset"):
-                user_settings.reset_settings()
-                st.success("설정이 초기화되었습니다!")
-                st.rerun()
+    with col2:
+        # 닉네임
+        nickname = st.text_input(
+            "닉네임",
+            value=settings["profile"]["nickname"],
+            key="nickname_input",
+            placeholder="닉네임을 입력하세요"
+        )
+        
+        # 자기소개
+        bio = st.text_area(
+            "자기소개",
+            value=settings["profile"]["bio"],
+            key="bio_input",
+            placeholder="환경에 관심이 있는 이유나 목표를 공유해주세요",
+            height=100
+        )
+        
+        # 프로필 저장 버튼
+        if st.button("프로필 저장", key="save_profile", type="primary"):
+            user_settings.update_category("profile", {
+                "nickname": nickname,
+                "bio": bio,
+                "avatar_emoji": selected_avatar
+            })
+            st.success("프로필이 저장되었습니다!")
+    
+    # 향후 확장 가능한 설정들을 위한 공간
+    st.markdown("---")
+    st.markdown("### 개발 예정 기능")
+    
+    with st.expander("🛠️ 향후 추가될 기능들"):
+        st.info("""
+        - **테마 설정**: 라이트/다크 모드 선택
+        - **언어 설정**: 한국어/영어 지원
+        - **응답 스타일**: 간단한 답변부터 학술적 설명까지
+        - **대화 기록 관리**: 자동 저장, 내보내기 기능
+        - **데이터 시각화 커스터마이징**
+        """)
+    
+    # 환경설정 주석 처리 (나중에 활성화 가능)
+    # col1, col2 = st.columns(2)
+    # 
+    # with col1:
+    #     # 테마 설정
+    #     st.markdown("**테마**")
+    #     theme = st.radio(
+    #         "테마 선택",
+    #         options=["light", "dark"],
+    #         format_func=lambda x: "🌞 라이트 모드" if x == "light" else "🌙 다크 모드",
+    #         index=0 if settings["preferences"]["theme"] == "light" else 1,
+    #         key="theme_radio",
+    #         label_visibility="collapsed"
+    #     )
+    #     
+    #     # 언어 설정
+    #     st.markdown("**언어**")
+    #     language = st.selectbox(
+    #         "언어 선택",
+    #         options=["ko", "en"],
+    #         format_func=lambda x: "🇰🇷 한국어" if x == "ko" else "🇺🇸 English",
+    #         index=0 if settings["preferences"]["language"] == "ko" else 1,
+    #         key="language_select",
+    #         label_visibility="collapsed"
+    #     )
+    # 
+    # with col2:
+    #     # 응답 스타일
+    #     st.markdown("**응답 스타일**")
+    #     response_style = st.radio(
+    #         "응답 스타일",
+    #         options=["simple", "detailed", "academic"],
+    #         format_func=lambda x: {
+    #             "simple": "🎯 간단명료",
+    #             "detailed": "📋 상세설명",
+    #             "academic": "🎓 학술적"
+    #         }[x],
+    #         index=["simple", "detailed", "academic"].index(settings["preferences"]["response_style"]),
+    #         key="response_style_radio",
+    #         label_visibility="collapsed"
+    #     )
 
 # 푸터
 st.markdown('''
