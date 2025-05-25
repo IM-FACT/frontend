@@ -44,4 +44,6 @@ Thumbs.db
 
 # Chat history storage
 chat_history/
-*.json
+
+# User settings
+user_settings/
