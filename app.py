@@ -202,6 +202,8 @@ elif st.session_state.current_tab == "history":
             st.session_state.current_tab = "home"
             # 세션 목록 업데이트
             st.session_state.sessions_list = chat_storage.get_all_sessions()
+            # URL 파라미터 업데이트하여 홈 탭으로 이동
+            st.query_params.tab = "home"
             st.rerun()
     
     # 대화 목록 가져오기
@@ -241,6 +243,8 @@ elif st.session_state.current_tab == "history":
                         st.session_state.current_session_id = session['id']
                         st.session_state.chat_history = chat_storage.get_messages(session['id'])
                         st.session_state.current_tab = "home"
+                        # URL 파라미터 업데이트하여 홈 탭으로 이동
+                        st.query_params.tab = "home"
                         st.rerun()
                 
                 with col2:
