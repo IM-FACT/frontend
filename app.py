@@ -202,6 +202,8 @@ elif st.session_state.current_tab == "history":
             st.session_state.current_tab = "home"
             # 세션 목록 업데이트
             st.session_state.sessions_list = chat_storage.get_all_sessions()
+            # URL 파라미터 업데이트하여 홈 탭으로 이동
+            st.query_params.tab = "home"
             st.rerun()
     
     # 대화 목록 가져오기
@@ -241,6 +243,8 @@ elif st.session_state.current_tab == "history":
                         st.session_state.current_session_id = session['id']
                         st.session_state.chat_history = chat_storage.get_messages(session['id'])
                         st.session_state.current_tab = "home"
+                        # URL 파라미터 업데이트하여 홈 탭으로 이동
+                        st.query_params.tab = "home"
                         st.rerun()
                 
                 with col2:
@@ -361,60 +365,7 @@ elif st.session_state.current_tab == "user":
             })
             st.success("프로필이 저장되었습니다!")
     
-    # 향후 확장 가능한 설정들을 위한 공간
-    st.markdown("---")
-    st.markdown("### 개발 예정 기능")
-    
-    with st.expander("🛠️ 향후 추가될 기능들"):
-        st.info("""
-        - **테마 설정**: 라이트/다크 모드 선택
-        - **언어 설정**: 한국어/영어 지원
-        - **응답 스타일**: 간단한 답변부터 학술적 설명까지
-        - **대화 기록 관리**: 자동 저장, 내보내기 기능
-        - **데이터 시각화 커스터마이징**
-        """)
-    
-    # 환경설정 주석 처리 (나중에 활성화 가능)
-    # col1, col2 = st.columns(2)
-    # 
-    # with col1:
-    #     # 테마 설정
-    #     st.markdown("**테마**")
-    #     theme = st.radio(
-    #         "테마 선택",
-    #         options=["light", "dark"],
-    #         format_func=lambda x: "🌞 라이트 모드" if x == "light" else "🌙 다크 모드",
-    #         index=0 if settings["preferences"]["theme"] == "light" else 1,
-    #         key="theme_radio",
-    #         label_visibility="collapsed"
-    #     )
-    #     
-    #     # 언어 설정
-    #     st.markdown("**언어**")
-    #     language = st.selectbox(
-    #         "언어 선택",
-    #         options=["ko", "en"],
-    #         format_func=lambda x: "🇰🇷 한국어" if x == "ko" else "🇺🇸 English",
-    #         index=0 if settings["preferences"]["language"] == "ko" else 1,
-    #         key="language_select",
-    #         label_visibility="collapsed"
-    #     )
-    # 
-    # with col2:
-    #     # 응답 스타일
-    #     st.markdown("**응답 스타일**")
-    #     response_style = st.radio(
-    #         "응답 스타일",
-    #         options=["simple", "detailed", "academic"],
-    #         format_func=lambda x: {
-    #             "simple": "🎯 간단명료",
-    #             "detailed": "📋 상세설명",
-    #             "academic": "🎓 학술적"
-    #         }[x],
-    #         index=["simple", "detailed", "academic"].index(settings["preferences"]["response_style"]),
-    #         key="response_style_radio",
-    #         label_visibility="collapsed"
-    #     )
+
 
 # 푸터
 st.markdown('''

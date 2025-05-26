@@ -45,3 +45,168 @@ footer {
     display: flex !important;
     justify-content: center !important;
 }
+
+/* 버튼 기본 스타일 */
+.stButton > button {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    border-radius: 10px;
+    padding: 12px 20px;
+    font-weight: 500;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.stButton > button::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: radial-gradient(circle, rgba(79, 209, 197, 0.3) 0%, transparent 70%);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.stButton > button:hover {
+    background: linear-gradient(135deg, rgba(79, 209, 197, 0.1), rgba(79, 209, 197, 0.05));
+    border-color: rgba(79, 209, 197, 0.4);
+    color: var(--accent-color);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(79, 209, 197, 0.2);
+}
+
+.stButton > button:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+.stButton > button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(79, 209, 197, 0.2);
+}
+
+/* Primary 버튼 스타일 */
+.stButton > button[type="primary"],
+.stButton > button[kind="primary"] {
+    background: linear-gradient(135deg, var(--accent-color), var(--accent-color-hover));
+    color: var(--bg-primary);
+    border: none;
+    font-weight: 600;
+}
+
+.stButton > button[type="primary"]:hover,
+.stButton > button[kind="primary"]:hover {
+    background: linear-gradient(135deg, var(--accent-color-hover), var(--accent-color));
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(79, 209, 197, 0.4);
+}
+
+/* 텍스트 입력 필드 스타일 */
+.stTextInput > div > div > input {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    color: var(--text-primary);
+    padding: 14px 20px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.stTextInput > div > div > input:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 2px rgba(79, 209, 197, 0.2),
+                0 4px 12px rgba(79, 209, 197, 0.1);
+    outline: none;
+}
+
+.stTextInput > div > div > input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+/* 빠른 질문 버튼 컨테이너 */
+.imfact-button-container {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 24px;
+    width: var(--content-width);
+    max-width: var(--content-max-width);
+    margin-left: auto;
+    margin-right: auto;
+    animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Selectbox 스타일 */
+.stSelectbox > div > div > div {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    color: var(--text-primary);
+}
+
+.stSelectbox > div > div > div:hover {
+    border-color: rgba(79, 209, 197, 0.4);
+}
+
+.stSelectbox > div > div > div[data-baseweb="select"]:focus-within {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 2px rgba(79, 209, 197, 0.2);
+}
+
+/* Textarea 스타일 */
+.stTextArea > div > div > textarea {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    color: var(--text-primary);
+    padding: 12px 16px;
+    transition: all 0.3s ease;
+}
+
+.stTextArea > div > div > textarea:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 2px rgba(79, 209, 197, 0.2);
+    outline: none;
+}
+
+/* Expander 스타일 */
+.stExpander {
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    background: var(--bg-secondary);
+}
+
+.stExpander > div > div > div > div > svg {
+    fill: var(--accent-color);
+}
+
+/* Success 메시지 스타일 */
+.stSuccess {
+    background-color: rgba(79, 209, 197, 0.1);
+    border: 1px solid rgba(79, 209, 197, 0.3);
+    border-radius: 8px;
+    color: var(--accent-color);
+}
+
+/* Info 메시지 스타일 */
+.stInfo {
+    background-color: rgba(79, 209, 197, 0.05);
+    border: 1px solid rgba(79, 209, 197, 0.2);
+    border-radius: 8px;
+    color: var(--text-primary);
+}
