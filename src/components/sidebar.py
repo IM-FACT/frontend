@@ -10,9 +10,6 @@ from typing import List, Dict, Optional
 SIDEBAR_ITEMS = [
     {"id": "home", "icon": "🌍", "title": "홈", "position": "top"},
     {"id": "history", "icon": "📝", "title": "대화 기록", "position": "top"},
-    {"id": "data", "icon": "📊", "title": "지구 환경 데이터", "position": "top"},
-    {"id": "sustainability", "icon": "🌐", "title": "지속가능성", "position": "top"},
-    {"id": "carbon", "icon": "♻️", "title": "탄소중립", "position": "top"},
     {"id": "user", "icon": "👤", "title": "사용자 설정", "position": "bottom"}
 ]
 

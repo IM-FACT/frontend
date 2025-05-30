@@ -291,25 +291,6 @@ elif st.session_state.current_tab == "history":
     else:
         st.info("저장된 대화가 없습니다. 새 대화를 시작해보세요!")
 
-elif st.session_state.current_tab == "data":
-    # 데이터 탭
-    render_tab_welcome("data")
-    
-    # 시각화 예시 (간단한 차트)
-    # 여기에 시각화 코드 추가
-
-elif st.session_state.current_tab == "sustainability":
-    # 지속가능성 탭 
-    render_tab_welcome("sustainability")
-    
-    # 추가 콘텐츠...
-
-elif st.session_state.current_tab == "carbon":
-    # 탄소중립 탭
-    render_tab_welcome("carbon")
-    
-    # 추가 콘텐츠...
-
 elif st.session_state.current_tab == "user":
     # 사용자 탭
     render_tab_welcome("user")
