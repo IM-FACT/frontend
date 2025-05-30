@@ -30,3 +30,22 @@ streamlit run app.py
 - Streamlit
 - Python
 - FastAPI (백엔드 연동) 
+
+## Streamlit 테마 적용
+
+`.streamlit/config.toml` 파일을 통해 앱의 색상, 폰트 등 테마를 커스터마이징할 수 있습니다. 예시:
+
+```
+[theme]
+primaryColor="#4fd1c5"
+backgroundColor="#181c23"
+secondaryBackgroundColor="#23272f"
+textColor="#ffffff"
+font="sans serif"
+```
+
+## UI/UX 개선 트렌드
+
+- 컬럼(st.columns), 컨테이너(st.container), Expander(st.expander) 등 Streamlit 레이아웃 컴포넌트 적극 활용
+- 트랜지션, 애니메이션, 마이크로인터랙션(hover, active 등)도 CSS로 추가 가능
+- 반응형 레이아웃은 min/max-width, 컬럼 조합 등으로 최대한 대응 

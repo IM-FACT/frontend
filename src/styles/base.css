@@ -210,3 +210,44 @@ footer {
     border-radius: 8px;
     color: var(--text-primary);
 }
+
+/* 기본/에러 상태: 연한 테두리 */
+.stSelectbox > div > div > div,
+.stTextArea > div > div > textarea {
+    border-color: var(--border-color) !important;
+    box-shadow: none !important;
+}
+.stSelectbox > div > div > div[style*="border-color: red"],
+.stTextArea > div > div > textarea[style*="border-color: red"] {
+    border-color: var(--border-color) !important;
+    box-shadow: none !important;
+}
+/* 포커스+에러까지 민트색 유지 */
+.stSelectbox > div > div > div[style*="border-color: red"]:focus-within,
+.stTextArea > div > div > textarea[style*="border-color: red"]:focus {
+    border-color: var(--accent-color) !important;
+    box-shadow: 0 0 0 2px rgba(79, 209, 197, 0.2) !important;
+    outline: none !important;
+}
+
+/* 입력창, 셀렉트박스, 텍스트에어리어의 모든 레이어에 동일한 border-radius 적용 */
+.stTextInput > div, 
+.stTextInput > div > div, 
+.stTextInput > div > div > input,
+.stTextArea > div, 
+.stTextArea > div > div, 
+.stTextArea > div > div > textarea,
+.stSelectbox > div, 
+.stSelectbox > div > div, 
+.stSelectbox > div > div > div {
+    border-radius: 12px !important;
+    overflow: visible !important;
+}
+
+/* 셀렉트박스/검색창 오른쪽 아이콘 div에도 border-radius 적용 */
+.stSelectbox [data-baseweb="select"] > div,
+.stTextInput svg, 
+.stSelectbox svg {
+    border-radius: 12px !important;
+    background: transparent !important;
+}
