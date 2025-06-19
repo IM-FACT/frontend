@@ -23,6 +23,26 @@ from src.components import (
 # 환경 변수 로드
 load_dotenv()
 
+# 백엔드 API 주소 환경변수 처리
+BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:8000")
+
+def ask_backend(question: str) -> str:
+    """
+    FastAPI 백엔드의 /im-fact/ask API를 호출하여 답변을 받아옵니다.
+    """
+    try:
+        resp = requests.post(
+            f"{BACKEND_URL}/im-fact/ask",
+            json={"content": question},
+            timeout=30
+        )
+        if resp.status_code == 200:
+            return resp.json().get("content", "No answer")
+        else:
+            return f"Error: {resp.status_code} - {resp.text}"
+    except Exception as e:
+        return f"API 호출 실패: {e}"
+
 # 페이지 구성
 st.set_page_config(layout="wide", initial_sidebar_state="expanded", page_title="IM.FACT - 환경 기후 어시스턴트")
 
