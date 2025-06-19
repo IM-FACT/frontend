@@ -48,39 +48,9 @@
     height: 100%;
 }
 
-.sidebar-user {
-    margin-top: auto;
-    margin-bottom: 16px;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: var(--accent-color);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-weight: 600;
-    font-size: 14px;
-    cursor: pointer;
-}
+/* 사용자 설정 버튼 제거됨 */
 
-.sidebar-user:hover {
-    opacity: 0.9;
-}
-
-.sidebar-user.active {
-    box-shadow: 0 0 0 2px var(--accent-color);
-}
-
-/* 메인 콘텐츠 영역 */
-.imfact-content {
-    margin-left: 54px;
-    width: calc(100% - 54px);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 30px 0 80px 0;
-}
+/* 메인 콘텐츠 영역 - Streamlit 구조에서는 base.css에서 직접 처리 */
 
 /* 푸터 */
 .imfact-footer {
@@ -173,7 +143,8 @@
 /* 로고 및 환영 영역 */
 .logo-container {
     text-align: center;
-    margin-bottom: 30px;
+    margin-top: 80px;
+    margin-bottom: 40px;
     max-width: 600px;
     margin-left: auto;
     margin-right: auto;
@@ -186,7 +157,7 @@
 .welcome-text {
     text-align: center;
     max-width: 600px;
-    margin: 0 auto 24px;
+    margin: 0 auto 40px;
     color: var(--text-secondary);
     font-size: 0.95rem;
     line-height: 1.5;
@@ -196,4 +167,109 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+/* 반응형 미디어 쿼리 */
+@media screen and (max-width: 767px) {
+    /* 모바일: 사이드바 숨김 */
+    .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: none;
+    }
+    
+    /* 모바일에서 사이드바가 보일 때 */
+    .sidebar.mobile-open {
+        transform: translateX(0);
+        z-index: 9999;
+        box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(8px);
+    }
+    
+    /* 사이드바 열렸을 때 배경 오버레이 */
+    body.sidebar-open::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 9998;
+        animation: fadeIn 0.3s ease;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    
+    /* 모바일: 사이드바 아이콘 크기 증가 (터치 친화적) */
+    .sidebar-icon {
+        width: 48px;
+        height: 48px;
+        margin: 8px 0;
+        font-size: 1.2rem;
+    }
+    
+    /* 로고 컨테이너 모바일 조정 */
+    .logo-container {
+        margin-top: 40px;
+        margin-bottom: 30px;
+        padding: 0 var(--padding-mobile);
+    }
+    
+    /* 환영 텍스트 모바일 조정 */
+    .welcome-text {
+        margin: 0 auto 30px;
+        padding: 0 var(--padding-mobile);
+        font-size: 0.9rem;
+    }
+    
+    /* 채팅 세션 카드 모바일 조정 */
+    .chat-session-card {
+        margin: 0 var(--padding-mobile) 12px;
+        padding: 14px 16px;
+        border-radius: 8px;
+    }
+    
+    /* 채팅 히스토리 컨테이너 모바일 */
+    .chat-history-container {
+        width: calc(100% - 20px);
+        max-width: calc(100% - 20px);
+        margin: 0 10px;
+    }
+}
+
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+    /* 태블릿 스타일 */
+    .logo-container {
+        margin-top: 60px;
+        margin-bottom: 35px;
+        padding: 0 var(--padding-tablet);
+    }
+    
+    .welcome-text {
+        margin: 0 auto 35px;
+        padding: 0 var(--padding-tablet);
+    }
+    
+    .chat-session-card {
+        margin: 0 var(--padding-tablet) 14px;
+        padding: 16px 20px;
+    }
+}
+
+@media screen and (min-width: 1025px) {
+    /* 데스크톱 스타일 (기본값 유지) */
+    .logo-container {
+        margin-top: 80px;
+        margin-bottom: 40px;
+        padding: 0 var(--padding-desktop);
+    }
+    
+    .welcome-text {
+        margin: 0 auto 40px;
+        padding: 0 var(--padding-desktop);
+    }
 }

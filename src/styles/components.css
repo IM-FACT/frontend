@@ -85,7 +85,9 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
     position: relative;
-    overflow: hidden;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    box-sizing: border-box;
     animation: messageSlideIn 0.4s ease-out;
 }
 
@@ -186,10 +188,25 @@
     width: 100%;
     line-height: 1.5;
     padding-left: 5px;
+    word-wrap: break-word !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+    white-space: pre-wrap !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+    hyphens: auto !important;
+    text-overflow: ellipsis !important;
+    contain: layout style paint !important;
 }
 
 .message-content p {
     margin-bottom: 12px;
+    word-wrap: break-word;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
+    overflow: hidden;
 }
 
 .message-content p:last-child {
@@ -199,10 +216,71 @@
 .message-content ul, .message-content ol {
     margin-top: 8px;
     margin-bottom: 12px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
+    overflow: hidden;
 }
 
 .message-content li {
     margin-bottom: 4px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+/* URL과 긴 텍스트 처리 - 더 강력한 제한 */
+.message-content a {
+    word-break: break-all !important;
+    overflow-wrap: anywhere !important;
+    white-space: pre-wrap !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+    display: inline-block !important;
+    vertical-align: top !important;
+}
+
+.message-content code {
+    word-break: break-all !important;
+    overflow-wrap: anywhere !important;
+    white-space: pre-wrap !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+    display: inline-block !important;
+    vertical-align: top !important;
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    padding: 2px 4px !important;
+    border-radius: 3px !important;
+    font-size: 0.9em !important;
+}
+
+.message-content pre {
+    word-break: break-all !important;
+    overflow-wrap: anywhere !important;
+    white-space: pre-wrap !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+    display: inline-block !important;
+    vertical-align: top !important;
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    padding: 8px !important;
+    border-radius: 6px !important;
+    margin: 8px 0 !important;
+    border-left: 3px solid var(--accent-color) !important;
+}
+
+/* 강력한 전역 텍스트 제한 */
+.message-content *,
+.message-content *::before,
+.message-content *::after {
+    max-width: 100% !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    word-break: break-word !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
 }
 
 /* 인용문 스타일 */
@@ -256,46 +334,108 @@
     line-height: 0;
 }
 
-/* 소스 링크 */
-.source-links {
+/* Perplexity 스타일 출처 섹션 */
+.perplexity-sources-section {
+    width: var(--content-width);
+    max-width: var(--content-max-width);
+    margin: 16px auto 20px auto;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.sources-header {
     display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 20px;
-    margin-bottom: 10px;
-    padding-top: 12px;
-    border-top: 1px solid var(--border-color);
-}
-
-.source-link {
-    background-color: rgba(255, 255, 255, 0.04);
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    padding: 5px 10px;
-    font-size: 0.8rem;
-    color: rgba(238, 242, 247, 0.8);
-    display: inline-flex;
     align-items: center;
-    transition: all 0.2s ease;
+    gap: 8px;
+    margin-bottom: 12px;
+    padding: 0 4px;
 }
 
-.source-link:hover {
-    background-color: rgba(79, 209, 197, 0.1);
-    border-color: rgba(79, 209, 197, 0.3);
+.sources-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-primary);
 }
 
-.source-link span {
-    margin-right: 6px;
-    font-size: 1em;
+.sources-count {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 2px 6px;
+    border-radius: 12px;
+    min-width: 20px;
+    text-align: center;
 }
 
-.source-header {
-    display: block;
-    font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.4);
-    margin-bottom: 5px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+
+
+/* 채팅 입력창 컨테이너 - 채팅 메시지와 동일한 너비로 일관성 유지 */
+.chat-input-container {
+    width: var(--content-width);
+    max-width: var(--content-max-width);
+    margin: 20px auto;
+    box-sizing: border-box;
+}
+
+/* 실제 Streamlit HTML 구조에 맞는 정확한 셀렉터 */
+.chat-input-container [data-testid="stTextInputRootElement"] {
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+.chat-input-container [data-baseweb="base-input"] {
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+.chat-input-container input[type="text"] {
+    width: 100% !important;
+    max-width: 100% !important;
+    background-color: var(--bg-secondary) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 12px !important;
+    padding: 14px 18px !important;
+    color: var(--text-primary) !important;
+    font-size: 0.95rem !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+    box-sizing: border-box !important;
+}
+
+.chat-input-container input[type="text"]:focus {
+    border-color: var(--accent-color) !important;
+    box-shadow: 0 0 0 2px rgba(79, 209, 197, 0.2), 0 4px 16px rgba(0, 0, 0, 0.15) !important;
+    outline: none !important;
+}
+
+.chat-input-container input[type="text"]::placeholder {
+    color: var(--text-secondary) !important;
+    opacity: 0.7 !important;
+}
+
+/* 반응형 채팅 입력창 */
+@media screen and (max-width: 767px) {
+    .chat-input-container {
+        width: calc(100vw - 20px);
+        max-width: calc(100vw - 20px);
+        margin: 16px 10px;
+    }
+}
+
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+    .chat-input-container {
+        width: var(--content-width);
+        max-width: var(--content-max-width);
+        margin: 18px auto;
+    }
+}
+
+@media screen and (min-width: 1025px) {
+    .chat-input-container {
+        width: var(--content-width);
+        max-width: var(--content-max-width);
+        margin: 20px auto;
+    }
 }
 
 /* 로딩 표시자 */
@@ -363,4 +503,151 @@
     color: rgba(59, 130, 246, 0.8);
     font-weight: 600;
     letter-spacing: 0.5px;
+}
+
+/* 모바일 햄버거 메뉴 버튼 */
+.mobile-menu-toggle {
+    display: none;
+}
+
+.mobile-menu-button {
+    display: none; /* 기본적으로 숨김 */
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 10000;
+    width: 30px;
+    height: 30px;
+    flex-direction: column;
+    justify-content: space-around;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* CSS 전용 햄버거 메뉴 - checkbox hack 사용 */
+.mobile-menu-button {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.mobile-menu-button span {
+    width: 100%;
+    height: 2px;
+    background: var(--text-primary);
+    transition: all 0.3s ease;
+    border-radius: 1px;
+}
+
+.mobile-menu-button:hover {
+    background: var(--accent-color);
+}
+
+.mobile-menu-button:hover span {
+    background: var(--bg-primary);
+}
+
+/* checkbox가 체크되었을 때 햄버거 메뉴 변형 */
+.mobile-menu-toggle:checked + .mobile-menu-button span:nth-child(1) {
+    transform: rotate(45deg) translate(6px, 6px);
+}
+
+.mobile-menu-toggle:checked + .mobile-menu-button span:nth-child(2) {
+    opacity: 0;
+}
+
+.mobile-menu-toggle:checked + .mobile-menu-button span:nth-child(3) {
+    transform: rotate(-45deg) translate(6px, -6px);
+}
+
+/* checkbox가 체크되었을 때 사이드바 표시 */
+.mobile-menu-toggle:checked ~ .sidebar {
+    transform: translateX(0) !important;
+    z-index: 9999 !important;
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* 반응형 컴포넌트 스타일 */
+@media screen and (max-width: 767px) {
+    /* 모바일: 햄버거 메뉴 표시 */
+    .mobile-menu-button {
+        display: flex;
+    }
+    
+    /* 햄버거 메뉴가 열렸을 때 배경 오버레이 */
+    .mobile-menu-toggle:checked::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 9998;
+    }
+    
+    /* 모바일: 채팅 메시지 */
+    .imfact-chat-message {
+        width: calc(100vw - 20px);
+        max-width: calc(100vw - 20px);
+        margin: 0 10px 16px 10px;
+        padding: 14px 16px;
+    }
+    
+    /* 모바일: 아바타 크기 조정 */
+    .avatar {
+        width: 26px;
+        height: 26px;
+        font-size: 12px;
+    }
+    
+    /* 모바일: 메시지 콘텐츠 */
+    .message-content {
+        font-size: 0.9rem;
+        line-height: 1.4;
+    }
+    
+    /* 모바일: 로고 텍스트 */
+    .logo-text {
+        font-size: 1.6rem;
+    }
+    
+    /* 모바일 소스 링크 CSS 제거됨 */
+}
+
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+    /* 태블릿: 채팅 메시지 */
+    .imfact-chat-message {
+        width: calc(100vw - 80px);
+        max-width: 700px;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 16px 18px;
+    }
+    
+    /* 태블릿: 로고 텍스트 */
+    .logo-text {
+        font-size: 1.8rem;
+    }
+}
+
+/* 터치 디바이스 최적화 */
+@media (hover: none) and (pointer: coarse) {
+    /* 터치 기기에서 호버 효과 제거 */
+    .imfact-chat-message:hover {
+        transform: none;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* 터치 가능한 요소 크기 증가 */
+    .sidebar-icon {
+        width: 44px;
+        height: 44px;
+        margin: 8px 0;
+    }
 }

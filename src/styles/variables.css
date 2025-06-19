@@ -1,6 +1,22 @@
 :root {
-    --content-width: 650px;
+    /* 기본 콘텐츠 너비 - 웹 전용 최적화 */
+    --content-width: 900px;
     --content-max-width: 90%;
+    
+    /* 반응형 브레이크포인트 */
+    --mobile-max: 767px;
+    --tablet-max: 1024px;
+    --desktop-min: 1025px;
+    
+    /* 반응형 사이드바 */
+    --sidebar-width: 54px;
+    --sidebar-collapsed-width: 0px;
+    
+    /* 반응형 여백 */
+    --padding-mobile: 10px;
+    --padding-tablet: 20px;
+    --padding-desktop: 30px;
+    
     --border-radius: 18px;
     --accent-color: #4fd1c5;
     --accent-color-hover: #38B2AC;

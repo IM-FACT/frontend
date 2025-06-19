@@ -55,32 +55,41 @@
     font-family: var(--font-family) !important;
 }
 
-/* 검색 컨테이너 스타일 */
-.imfact-search-container {
-    position: relative;
+/* 채팅 입력 컨테이너 - 채팅 메시지와 동일한 너비로 일관성 유지 */
+.chat-input-container {
     width: var(--content-width) !important;
     max-width: var(--content-max-width) !important;
-    margin: 16px auto !important;
-    box-sizing: border-box !important;
-    display: flex !important;
-    justify-content: center !important;
+    margin: 20px auto;
+    display: flex;
+    justify-content: center;
 }
 
-.imfact-search-container .stTextInput {
-    width: 100% !important;
-    max-width: var(--content-width) !important;
-    display: flex !important;
-    justify-content: center !important;
-}
-
-.imfact-search-container .stTextInput > div {
+.chat-input-container .stTextInput {
     width: 100% !important;
     max-width: 100% !important;
-    background-color: rgba(255, 255, 255, 0.04) !important;
+}
+
+/* 채팅 입력 필드 개선된 스타일 */
+.stTextInput > div > div > input {
+    background: rgba(255, 255, 255, 0.04) !important;
     border: 1px solid rgba(255, 255, 255, 0.08) !important;
-    border-radius: var(--border-radius) !important;
+    border-radius: 12px !important;
     color: #eef2f7 !important;
-    padding: 0 15px !important;
+    padding: 14px 20px !important;
+    font-size: 1rem !important;
+    transition: all 0.3s ease !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+.stTextInput > div > div > input:focus {
+    border-color: var(--accent-color) !important;
+    box-shadow: 0 0 0 2px rgba(79, 209, 197, 0.2) !important;
+    outline: none !important;
+}
+
+.stTextInput > div > div > input::placeholder {
+    color: rgba(255, 255, 255, 0.4) !important;
 }
 
 /* Streamlit 컬럼 정렬 개선 */
