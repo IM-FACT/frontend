@@ -1,6 +1,7 @@
 """
 사이드바 네비게이션 컴포넌트
 앱의 주요 섹션으로 이동할 수 있는 사이드바 메뉴를 제공합니다.
+모바일 환경에서는 햄버거 메뉴로 토글 가능합니다.
 """
 import streamlit as st
 from typing import List, Dict, Optional
@@ -9,12 +10,26 @@ from typing import List, Dict, Optional
 # 사이드바 메뉴 아이템 정의
 SIDEBAR_ITEMS = [
     {"id": "home", "icon": "🌍", "title": "홈", "position": "top"},
-    {"id": "history", "icon": "📝", "title": "대화 기록", "position": "top"},
-    {"id": "data", "icon": "📊", "title": "지구 환경 데이터", "position": "top"},
-    {"id": "sustainability", "icon": "🌐", "title": "지속가능성", "position": "top"},
-    {"id": "carbon", "icon": "♻️", "title": "탄소중립", "position": "top"},
-    {"id": "user", "icon": "👤", "title": "사용자 설정", "position": "bottom"}
+    {"id": "history", "icon": "📝", "title": "대화 기록", "position": "top"}
 ]
+
+
+def get_mobile_menu_button() -> str:
+    """
+    모바일 환경을 위한 햄버거 메뉴 버튼을 생성합니다.
+    CSS checkbox hack을 사용하여 JavaScript 없이 토글 기능 구현
+    
+    Returns:
+        햄버거 메뉴 버튼 HTML (CSS 전용)
+    """
+    return """
+    <input type="checkbox" id="mobile-menu-toggle" class="mobile-menu-toggle" />
+    <label for="mobile-menu-toggle" class="mobile-menu-button" role="button" aria-label="메뉴 열기/닫기">
+        <span></span>
+        <span></span>
+        <span></span>
+    </label>
+    """
 
 
 def get_sidebar_html(current_tab: str) -> str:
@@ -51,6 +66,7 @@ def get_sidebar_html(current_tab: str) -> str:
         html += '</div>'
     
     html += '</div>'
+    
     return html
 
 
@@ -58,10 +74,14 @@ def render_sidebar() -> None:
     """
     사이드바를 렌더링합니다.
     세션 상태에서 current_tab을 읽어 활성 상태를 표시합니다.
+    모바일 환경에서는 햄버거 메뉴도 함께 렌더링합니다.
     """
     current_tab = st.session_state.get("current_tab", "home")
-    # 디버깅을 위해 현재 탭 출력
-    # st.write(f"Current tab: {current_tab}")
+    
+    # 모바일 햄버거 메뉴 버튼 렌더링
+    st.markdown(get_mobile_menu_button(), unsafe_allow_html=True)
+    
+    # 사이드바 렌더링
     sidebar_html = get_sidebar_html(current_tab)
     st.markdown(sidebar_html, unsafe_allow_html=True)
 

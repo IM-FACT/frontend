@@ -14,14 +14,19 @@ def render_user_message(message: Dict[str, str]) -> None:
     Args:
         message: 메시지 정보를 담은 딕셔너리
             - content: 메시지 내용
-            - time: 메시지 시간
+            - time 또는 created_at: 메시지 시간
     """
+    # time 또는 created_at 필드에서 시간 추출 (안전 처리)
+    time_display = message.get("time") or message.get("created_at", "")
+    if "T" in str(time_display):  # ISO 형식이면 시간만 추출
+        time_display = time_display.split("T")[1][:5] if "T" in time_display else time_display
+    
     st.markdown(f"""
     <div class="imfact-chat-message user">
         <div class="message-header">
             <div class="avatar user-avatar">U</div>
             <span class="name-title">You</span>
-            <span class="time">{message["time"]}</span>
+            <span class="time">{time_display}</span>
         </div>
         <div class="message-content">
             {message["content"]}
@@ -33,25 +38,61 @@ def render_user_message(message: Dict[str, str]) -> None:
 def render_assistant_message(message: Dict[str, any]) -> None:
     """
     어시스턴트 메시지를 렌더링합니다.
-    - 답변 본문은 마크다운으로 렌더링
-    - 답변 내 번호 리스트(출처 URL 등)는 자동 추출하여 별도 영역에 시각적으로 구분
-    - <div></div> 등 불필요한 태그 노출 방지
-    - 인용문, 주요 팩트 등은 기존 스타일 유지
+    - 답변 본문만 메시지 컨테이너에 렌더링
+    - 출처는 추출해서 반환 (별도 렌더링용)
     """
     content = message["content"]
+    
+    # time 또는 created_at 필드에서 시간 추출 (안전 처리)
+    time_display = message.get("time") or message.get("created_at", "")
+    if "T" in str(time_display):  # ISO 형식이면 시간만 추출
+        time_display = time_display.split("T")[1][:5] if "T" in time_display else time_display
 
-    # 답변에서 출처(번호+URL) 리스트 자동 추출
-    # 예: 1. http...\n2. http...
-    source_pattern = r"^(\d+)\.\s*(https?://\S+)"  # 번호. URL
-    lines = content.strip().split("\n")
+    # 답변에서 출처 URL 자동 추출 (다양한 패턴 지원)
     sources = []
+    
+    # 1. 번호가 있는 URL: "1. https://example.com" 
+    numbered_url_pattern = r"^(\d+)\.\s*(https?://\S+)"
+    
+    # 2. 일반 URL: "https://example.com" 또는 "출처: https://example.com"
+    general_url_pattern = r"(https?://[^\s]+)"
+    
+    # 3. 도메인만 있는 경우: "news.kbs.co.kr" -> "https://news.kbs.co.kr"로 변환
+    domain_pattern = r"(?:^|\s)([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})(?:\s|$)"
+    
+    lines = content.strip().split("\n")
     body_lines = []
+    
     for line in lines:
-        m = re.match(source_pattern, line.strip())
+        line_processed = False
+        
+        # 1. 번호가 있는 URL 패턴 확인
+        m = re.match(numbered_url_pattern, line.strip())
         if m:
-            sources.append(line.strip())
-        else:
+            num, url = m.groups()
+            sources.append({"num": num, "url": url})
+            line_processed = True
+        
+        # 2. 일반 URL 패턴에서 URL 추출
+        elif not line_processed:
+            urls = re.findall(general_url_pattern, line)
+            for url in urls:
+                sources.append({"num": str(len(sources) + 1), "url": url})
+        
+        # 3. 도메인만 있는 경우 (news.kbs.co.kr 같은)
+        if not line_processed and not re.search(general_url_pattern, line):
+            domains = re.findall(domain_pattern, line)
+            for domain in domains:
+                # 일반적인 도메인이고 URL이 아닌 경우에만 처리
+                if "." in domain and not domain.startswith("http") and len(domain.split(".")) >= 2:
+                    url = f"https://{domain}"
+                    sources.append({"num": str(len(sources) + 1), "url": url})
+                    line_processed = True
+        
+        # URL/도메인이 포함된 줄이 아니면 본문에 추가
+        if not line_processed:
             body_lines.append(line)
+    
     body = "\n".join(body_lines).strip()
 
     # 특수 태그 변환 (인용문, 주요 팩트 등)
@@ -59,28 +100,31 @@ def render_assistant_message(message: Dict[str, any]) -> None:
     body = body.replace("<key-fact>", '<span class="key-fact">').replace("</key-fact>", '</span>')
     body = body.replace("<data-visualization>", '<div class="data-visualization">').replace("</data-visualization>", '</div>')
 
+    # 줄바꿈을 HTML로 변환
+    body_html = body.replace('\n', '<br>')
+
+    # 메시지 본문 렌더링
     st.markdown(f"""
     <div class="imfact-chat-message assistant">
         <div class="message-header">
             <div class="avatar assistant-avatar">🌍</div>
             <span class="name-title">IM.FACT</span>
-            <span class="time">{message["time"]}</span>
+            <span class="time">{time_display}</span>
         </div>
         <div class="message-content">
+            {body_html}
+        </div>
+    </div>
     """, unsafe_allow_html=True)
-    # 본문 마크다운 렌더링
-    st.markdown(body, unsafe_allow_html=True)
-    # 출처 리스트 별도 표시
+    
+    # 출처는 세션 상태에 저장해서 별도 렌더링
     if sources:
-        st.markdown('<div class="source-links"><span class="source-header">출처</span>', unsafe_allow_html=True)
-        for src in sources:
-            # 번호와 URL 분리
-            m = re.match(source_pattern, src)
-            if m:
-                num, url = m.groups()
-                st.markdown(f'<div class="source-link">{num}. <a href="{url}" target="_blank">{url}</a></div>', unsafe_allow_html=True)
-        st.markdown('</div>', unsafe_allow_html=True)
-    st.markdown("</div></div>", unsafe_allow_html=True)
+        if 'current_sources' not in st.session_state:
+            st.session_state.current_sources = []
+        st.session_state.current_sources = sources
+    else:
+        # 출처가 없으면 현재 출처 목록 초기화
+        st.session_state.current_sources = []
 
 
 def render_typing_indicator() -> None:
@@ -101,6 +145,40 @@ def render_typing_indicator() -> None:
         </div>
     </div>
     """, unsafe_allow_html=True)
+
+
+def render_sources_section() -> None:
+    """
+    Perplexity 스타일의 출처 섹션을 렌더링합니다.
+    세션 상태에 저장된 출처들을 메시지 밖 별도 영역에 표시
+    """
+    if hasattr(st.session_state, 'current_sources') and st.session_state.current_sources:
+        sources = st.session_state.current_sources
+        
+        # Perplexity 스타일 출처 섹션
+        st.markdown("""
+        <div class="perplexity-sources-section">
+            <div class="sources-header">
+                <span class="sources-title">📚 출처</span>
+                <span class="sources-count">{} 개</span>
+            </div>
+        </div>
+        """.format(len(sources)), unsafe_allow_html=True)
+        
+        # 출처 버튼들을 한 줄로 배치
+        cols = st.columns(min(len(sources), 4))  # 최대 4개 컬럼
+        for i, source in enumerate(sources):
+            with cols[i % 4]:
+                # 도메인 추출
+                import re
+                domain_match = re.search(r'https?://(?:www\.)?([^/]+)', source['url'])
+                domain = domain_match.group(1) if domain_match else "링크"
+                
+                st.link_button(
+                    f"🔗 {domain}",
+                    source['url'],
+                    use_container_width=True
+                )
 
 
 def render_chat_message(message: Dict[str, any]) -> None:

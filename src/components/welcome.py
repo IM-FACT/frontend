@@ -97,26 +97,6 @@ TAB_HEADERS = {
         "title": "대화 기록",
         "highlight": "기록",
         "description": "이전 대화 기록을 확인하고 계속할 수 있습니다."
-    },
-    "data": {
-        "title": "기후 데이터",
-        "highlight": "데이터",
-        "description": "주요 기후 및 환경 데이터를 시각화하여 제공합니다."
-    },
-    "sustainability": {
-        "title": "지속가능성",
-        "highlight": "가능성",
-        "description": "지속가능한 미래를 위한 정보와 자원을 제공합니다."
-    },
-    "carbon": {
-        "title": "탄소중립",
-        "highlight": "중립",
-        "description": "탄소중립 달성을 위한 정보와 가이드를 제공합니다."
-    },
-    "user": {
-        "title": "사용자 설정",
-        "highlight": "설정",
-        "description": "개인 설정 및 대화 기록을 관리합니다."
     }
 }
 

@@ -3,17 +3,25 @@ html, body, .main, .stApp {
     background-color: var(--bg-primary) !important;
     color: var(--text-primary) !important;
     font-family: var(--font-family);
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
 }
 
-/* Streamlit 기본 여백 제거 */
-.block-container {
+/* Streamlit 메인 앱에 사이드바 여액 적용 */
+.main .block-container {
+    padding-left: 74px !important;
+    padding-right: 30px !important;
     padding-top: 0 !important;
     padding-bottom: 0 !important;
-    max-width: 100% !important;
+    max-width: 1200px !important;
     margin: 0 auto !important;
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
+    width: auto !important;
+    box-sizing: border-box !important;
 }
 
 /* 헤더 숨기기 */
@@ -89,21 +97,9 @@ footer {
     box-shadow: 0 2px 6px rgba(79, 209, 197, 0.2);
 }
 
-/* Primary 버튼 스타일 */
-.stButton > button[type="primary"],
-.stButton > button[kind="primary"] {
-    background: linear-gradient(135deg, var(--accent-color), var(--accent-color-hover));
-    color: var(--bg-primary);
-    border: none;
-    font-weight: 600;
-}
+/* Custom 컴포넌트 스타일만 유지 - Streamlit 네이티브 요소는 config.toml이 제어 */
 
-.stButton > button[type="primary"]:hover,
-.stButton > button[kind="primary"]:hover {
-    background: linear-gradient(135deg, var(--accent-color-hover), var(--accent-color));
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(79, 209, 197, 0.4);
-}
+
 
 /* 텍스트 입력 필드 스타일 */
 .stTextInput > div > div > input {
@@ -114,6 +110,9 @@ footer {
     padding: 14px 20px;
     font-size: 1rem;
     transition: all 0.3s ease;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .stTextInput > div > div > input:focus {
@@ -209,4 +208,55 @@ footer {
     border: 1px solid rgba(79, 209, 197, 0.2);
     border-radius: 8px;
     color: var(--text-primary);
+}
+
+/* 반응형 Streamlit 컨테이너 */
+@media screen and (max-width: 767px) {
+    /* 모바일: 사이드바 여백 제거 */
+    .main .block-container {
+        padding-left: var(--padding-mobile) !important;
+        padding-right: var(--padding-mobile) !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        max-width: none !important;
+        margin: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+    
+    /* 모바일: 빠른 질문 버튼 컨테이너 */
+    .imfact-button-container {
+        width: calc(100vw - 20px);
+        max-width: calc(100vw - 20px);
+        margin-left: auto;
+        margin-right: auto;
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    /* 모바일: 텍스트 입력 */
+    .stTextInput > div > div > input {
+        font-size: 16px; /* iOS 줌 방지 */
+        padding: 12px 16px;
+    }
+}
+
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+    /* 태블릿: 조정된 여백 */
+    .main .block-container {
+        padding-left: calc(var(--sidebar-width) + var(--padding-tablet)) !important;
+        padding-right: var(--padding-tablet) !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        max-width: none !important;
+        margin: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
 }
