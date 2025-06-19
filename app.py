@@ -65,6 +65,7 @@ if 'current_session_id' not in st.session_state:
         st.session_state.chat_history = chat_storage.get_messages(sessions[0]['id'])
     else:
         st.session_state.current_session_id = chat_storage.create_session("새 대화")
+        st.session_state.chat_history = []
 if 'sessions_list' not in st.session_state:
     st.session_state.sessions_list = chat_storage.get_all_sessions()
 
@@ -93,10 +94,8 @@ def handle_user_input():
             "time": now
         }
         st.session_state.chat_history.append(message)
-        
-        # 메시지 저장
+        # 메시지 저장 (백엔드 API)
         chat_storage.save_message(st.session_state.current_session_id, message)
-        
         st.session_state.chat_input = ""  # 입력 필드 초기화
         st.session_state.is_typing = True
         st.rerun()
@@ -105,9 +104,7 @@ def handle_user_input():
 def generate_response(question):
     # 타이핑 효과를 위한 지연
     time.sleep(1.5)
-    
     now = datetime.now().strftime("%H:%M")
-    
     # 실제 백엔드 API 호출
     backend_answer = ask_backend(question)
     answer = {
@@ -115,13 +112,10 @@ def generate_response(question):
         "content": backend_answer,
         "time": now
     }
-    
     # 채팅 기록에 응답 추가
     st.session_state.chat_history.append(answer)
-    
-    # 응답 저장
+    # 응답 저장 (백엔드 API)
     chat_storage.save_message(st.session_state.current_session_id, answer)
-    
     st.session_state.is_typing = False
 
 # 탭별 콘텐츠 표시
@@ -183,7 +177,6 @@ elif st.session_state.current_tab == "history":
             st.session_state.current_tab = "home"
             # 세션 목록 업데이트
             st.session_state.sessions_list = chat_storage.get_all_sessions()
-            # URL 파라미터 업데이트하여 홈 탭으로 이동
             st.query_params.tab = "home"
             st.rerun()
     
@@ -196,7 +189,6 @@ elif st.session_state.current_tab == "history":
     # 저장된 대화 목록 표시
     if sessions:
         for session in sessions:
-            # 현재 활성 세션인지 확인
             is_current_session = session['id'] == st.session_state.current_session_id
             
             # 세션 카드 컨테이너
@@ -205,7 +197,7 @@ elif st.session_state.current_tab == "history":
                 
                 with col1:
                     # 세션 카드
-                    preview_text = session.get('first_message', '새 대화') or '새 대화'
+                    preview_text = session.get('title', '새 대화')
                     if len(preview_text) > 50:
                         preview_text = preview_text[:50] + "..."
                     
@@ -215,16 +207,14 @@ elif st.session_state.current_tab == "history":
                     # 세션 선택 버튼
                     button_type = "primary" if is_current_session else "secondary"
                     if st.button(
-                        f"{current_indicator}📝 {session['title']}\n{preview_text}\n💬 {session['message_count']}개 메시지 · 📅 {session['updated_at'][:10]}",
+                        f"{current_indicator}📝 {session['title']}\n{preview_text}",
                         key=f"session_{session['id']}",
                         use_container_width=True,
                         type=button_type
                     ):
-                        # 세션 로드
                         st.session_state.current_session_id = session['id']
                         st.session_state.chat_history = chat_storage.get_messages(session['id'])
                         st.session_state.current_tab = "home"
-                        # URL 파라미터 업데이트하여 홈 탭으로 이동
                         st.query_params.tab = "home"
                         st.rerun()
                 
@@ -262,7 +252,7 @@ elif st.session_state.current_tab == "history":
                         )
                     with col2:
                         if st.button("저장", key=f"save_title_{session['id']}"):
-                            chat_storage.update_session_title(session['id'], new_title)
+                            # update_session_title은 현재 미구현
                             st.session_state[f"editing_{session['id']}"] = False
                             st.session_state.sessions_list = chat_storage.get_all_sessions()
                             st.rerun()
