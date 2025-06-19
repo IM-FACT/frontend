@@ -227,15 +227,17 @@ if st.session_state.current_tab == "home":
     st.session_state.handle_user_input = handle_user_input
     render_quick_buttons()
 
-    # 검색 입력 필드 - 채팅 메시지와 동일한 너비로 중앙 정렬
-    st.markdown('<div class="chat-input-container">', unsafe_allow_html=True)
-    st.text_input(
-        "환경, 기후, 지속가능성에 대해 무엇이든 물어보세요",
-        placeholder="🔍 예: 탄소중립이란 무엇인가요?",
-        label_visibility="collapsed",
-        key="chat_input",
-        on_change=handle_user_input
-    )
+    # 검색 입력 필드 - 이전 작업물과 동일한 방식으로 복원
+    st.markdown('<div style="display: flex; justify-content: center; width: 100%; margin-top: 20px;">', unsafe_allow_html=True)
+    search_container = st.container()
+    with search_container:
+        st.text_input(
+            "환경, 기후, 지속가능성에 대해 무엇이든 물어보세요",
+            placeholder="🔍 예: 탄소중립이란 무엇인가요?",
+            label_visibility="collapsed",
+            key="chat_input",
+            on_change=handle_user_input
+        )
     st.markdown('</div>', unsafe_allow_html=True)
 
 elif st.session_state.current_tab == "history":

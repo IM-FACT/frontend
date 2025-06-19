@@ -369,23 +369,45 @@
 
 
 
-/* 채팅 입력창 컨테이너 - 채팅 메시지와 동일한 너비로 일관성 유지 */
+/* 채팅 입력창 컨테이너 - 채팅 메시지와 완전히 동일한 너비 강제 적용 */
 .chat-input-container {
-    width: var(--content-width);
-    max-width: var(--content-max-width);
-    margin: 20px auto;
-    box-sizing: border-box;
+    width: var(--content-width) !important;
+    max-width: var(--content-max-width) !important;
+    margin: 20px auto !important;
+    box-sizing: border-box !important;
+    display: block !important;
 }
 
-/* 실제 Streamlit HTML 구조에 맞는 정확한 셀렉터 */
+/* Streamlit 입력창 강제 너비 제한 - 더 구체적인 셀렉터와 높은 우선순위 */
 .chat-input-container [data-testid="stTextInputRootElement"] {
     width: 100% !important;
     max-width: 100% !important;
+    margin: 0 !important;
+    flex: none !important;
+}
+
+.chat-input-container [data-testid="stTextInputRootElement"] > div {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    flex: none !important;
 }
 
 .chat-input-container [data-baseweb="base-input"] {
     width: 100% !important;
     max-width: 100% !important;
+    margin: 0 !important;
+    flex: none !important;
+}
+
+/* Streamlit 컨테이너 자체 제한 - 더 강력한 우선순위 */
+/* Streamlit 1.40+ 호환 - 새로운 data-testid 셀렉터 사용 */
+section[data-testid="stMain"] div[data-testid="stMainBlockContainer"] [data-testid="stTextInputRootElement"] {
+    width: var(--content-width) !important;
+    max-width: var(--content-max-width) !important;
+    margin: 20px auto !important;
+    display: block !important;
+    flex: none !important;
 }
 
 .chat-input-container input[type="text"] {

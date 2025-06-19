@@ -9,8 +9,8 @@ html, body, .main, .stApp {
     height: 100% !important;
 }
 
-/* Streamlit 메인 앱에 사이드바 여액 적용 */
-.main .block-container {
+/* Streamlit 메인 앱에 사이드바 여백 적용 - Streamlit 1.40+ 호환 */
+section[data-testid="stMain"] > div[data-testid="stMainBlockContainer"] {
     padding-left: 74px !important;
     padding-right: 30px !important;
     padding-top: 0 !important;
@@ -212,8 +212,8 @@ footer {
 
 /* 반응형 Streamlit 컨테이너 */
 @media screen and (max-width: 767px) {
-    /* 모바일: 사이드바 여백 제거 */
-    .main .block-container {
+    /* 모바일: 사이드바 여백 제거 - Streamlit 1.40+ 호환 */
+    section[data-testid="stMain"] > div[data-testid="stMainBlockContainer"] {
         padding-left: var(--padding-mobile) !important;
         padding-right: var(--padding-mobile) !important;
         padding-top: 0 !important;
