@@ -1,9 +1,11 @@
-/* 로고 스타일 */
+/* 로고 스타일 - Perplexity 스타일 */
 .logo-text {
-    font-size: 2rem;
-    font-weight: 700;
-    letter-spacing: -1px;
+    font-size: 2.8rem;
+    font-weight: 600;
+    letter-spacing: -2px;
     animation: fadeInDown 0.6s ease-out;
+    color: var(--text-primary);
+    text-align: center;
 }
 
 .logo-highlight {
@@ -68,27 +70,28 @@
     }
 }
 
-/* 채팅 메시지 컨테이너 */
+/* 채팅 메시지 컨테이너 - Perplexity 스타일 */
 .imfact-chat-message {
     width: var(--content-width);
     max-width: var(--content-max-width);
     margin-left: auto;
     margin-right: auto;
-    background-color: var(--bg-secondary);
-    border-radius: 12px;
-    margin-bottom: 20px;
-    padding: 18px 20px;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 16px;
+    margin-bottom: 24px;
+    padding: 24px 28px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    border: 1px solid var(--border-color);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow-wrap: break-word;
     word-wrap: break-word;
     box-sizing: border-box;
-    animation: messageSlideIn 0.4s ease-out;
+    animation: messageSlideIn 0.5s ease-out;
+    backdrop-filter: blur(8px);
 }
 
 @keyframes messageSlideIn {
@@ -124,21 +127,45 @@
 }
 
 .imfact-chat-message.user {
-    background: linear-gradient(135deg, rgba(79, 209, 197, 0.05), rgba(79, 209, 197, 0.02));
-    border-color: rgba(79, 209, 197, 0.2);
+    background: linear-gradient(135deg, rgba(79, 209, 197, 0.08), rgba(79, 209, 197, 0.03));
+    border-color: rgba(79, 209, 197, 0.15);
+    position: relative;
 }
 
 .imfact-chat-message.user::before {
     color: var(--user-color);
 }
 
+.imfact-chat-message.user::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(180deg, var(--accent-color), rgba(79, 209, 197, 0.6));
+    border-radius: 0 2px 2px 0;
+}
+
 .imfact-chat-message.assistant {
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.03), rgba(59, 130, 246, 0.01));
-    border-color: rgba(59, 130, 246, 0.15);
+    background: rgba(255, 255, 255, 0.02);
+    border-color: rgba(255, 255, 255, 0.08);
+    position: relative;
 }
 
 .imfact-chat-message.assistant::before {
     color: var(--assistant-color);
+}
+
+.imfact-chat-message.assistant::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(180deg, var(--assistant-color), rgba(59, 130, 246, 0.6));
+    border-radius: 0 2px 2px 0;
 }
 
 /* 메시지 헤더 및 아바타 */
@@ -334,40 +361,140 @@
     line-height: 0;
 }
 
-/* Perplexity 스타일 출처 섹션 */
+/* Perplexity 스타일 출처 섹션 개선 - 너비 완전 일치 */
 .perplexity-sources-section {
     width: var(--content-width);
     max-width: var(--content-max-width);
-    margin: 16px auto 20px auto;
-    padding: 0;
+    margin: 20px auto 25px auto;
+    padding: 16px 20px;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(59, 130, 246, 0.02));
+    border: 1px solid rgba(59, 130, 246, 0.15);
+    border-radius: 12px;
+    backdrop-filter: blur(8px);
     box-sizing: border-box;
 }
 
 .sources-header {
     display: flex;
     align-items: center;
-    gap: 8px;
-    margin-bottom: 12px;
-    padding: 0 4px;
+    gap: 10px;
+    margin-bottom: 16px;
+    padding: 0;
 }
 
 .sources-title {
-    font-size: 0.9rem;
+    font-size: 1rem;
     font-weight: 600;
     color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.sources-title::before {
+    content: '📚';
+    font-size: 1.1rem;
 }
 
 .sources-count {
     font-size: 0.8rem;
-    color: var(--text-secondary);
-    background: rgba(255, 255, 255, 0.05);
-    padding: 2px 6px;
+    color: rgba(59, 130, 246, 0.8);
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.08));
+    padding: 4px 8px;
     border-radius: 12px;
-    min-width: 20px;
+    min-width: 24px;
     text-align: center;
+    font-weight: 600;
+    border: 1px solid rgba(59, 130, 246, 0.2);
 }
 
+/* 출처 버튼 그리드 - 더 컴팩트하게 */
+.sources-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+    justify-content: flex-start;
+}
 
+/* HTML 기반 출처 링크 버튼 - 완전한 크기 제어 */
+.source-link-button {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03)) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    border-radius: 8px !important;
+    padding: 6px 10px !important;
+    color: var(--text-primary) !important;
+    text-decoration: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    font-size: 0.8rem !important;
+    font-weight: 500 !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    backdrop-filter: blur(4px) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    width: auto !important;
+    max-width: 140px !important;
+    min-width: 80px !important;
+    box-sizing: border-box !important;
+    flex: 0 0 auto !important;
+    cursor: pointer !important;
+}
+
+.source-link-button:hover {
+    background: linear-gradient(135deg, rgba(79, 209, 197, 0.15), rgba(79, 209, 197, 0.08)) !important;
+    border-color: var(--accent-color) !important;
+    color: var(--accent-color) !important;
+    transform: translateY(-2px) scale(1.02) !important;
+    box-shadow: 0 6px 20px rgba(79, 209, 197, 0.2) !important;
+    text-decoration: none !important;
+}
+
+.source-link-button:active {
+    transform: translateY(-1px) scale(1.01) !important;
+    box-shadow: 0 4px 12px rgba(79, 209, 197, 0.15) !important;
+}
+
+.source-link-button:visited {
+    color: var(--text-primary) !important;
+}
+
+.source-link-button:visited:hover {
+    color: var(--accent-color) !important;
+}
+
+/* 반응형 출처 섹션 */
+@media screen and (max-width: 767px) {
+    .perplexity-sources-section {
+        width: calc(100vw - 20px);
+        max-width: calc(100vw - 20px);
+        margin: 16px 10px 20px 10px;
+        padding: 14px 16px;
+    }
+    
+    .sources-grid {
+        gap: 6px;
+    }
+    
+    .source-link-button {
+        padding: 5px 8px !important;
+        font-size: 0.75rem !important;
+        max-width: 120px !important;
+        min-width: 70px !important;
+    }
+}
+
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+    .source-link-button {
+        padding: 6px 9px !important;
+        font-size: 0.78rem !important;
+        max-width: 130px !important;
+        min-width: 75px !important;
+    }
+}
 
 /* 채팅 입력창 컨테이너 - 채팅 메시지와 완전히 동일한 너비 강제 적용 */
 .chat-input-container {
@@ -658,6 +785,212 @@ section[data-testid="stMain"] div[data-testid="stMainBlockContainer"] [data-test
     }
 }
 
+/* 퀵버튼 컨테이너 - Perplexity 스타일 */
+.quick-buttons-container {
+    width: var(--content-width);
+    max-width: var(--content-max-width);
+    margin: 35px auto 25px auto;
+    padding: 0 20px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    animation: fadeInUp 0.6s ease-out;
+}
+
+/* 퀵버튼 내부 Streamlit 버튼 스타일 - Perplexity 스타일 */
+.quick-buttons-container [data-testid="stButton"] > button {
+    background: rgba(255, 255, 255, 0.04) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 20px !important;
+    padding: 10px 16px !important;
+    color: rgba(255, 255, 255, 0.8) !important;
+    font-size: 0.9rem !important;
+    font-weight: 400 !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    backdrop-filter: blur(8px) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    min-width: 100px !important;
+    max-width: 180px !important;
+    height: 44px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    letter-spacing: -0.02em !important;
+}
+
+.quick-buttons-container [data-testid="stButton"] > button:hover {
+    background: linear-gradient(135deg, rgba(79, 209, 197, 0.15), rgba(79, 209, 197, 0.08)) !important;
+    border-color: var(--accent-color) !important;
+    color: var(--accent-color) !important;
+    transform: translateY(-2px) scale(1.02) !important;
+    box-shadow: 0 6px 20px rgba(79, 209, 197, 0.2) !important;
+}
+
+.quick-buttons-container [data-testid="stButton"] > button:active {
+    transform: translateY(-1px) scale(1.01) !important;
+    box-shadow: 0 4px 12px rgba(79, 209, 197, 0.15) !important;
+}
+
+/* 반응형 퀵버튼 */
+@media screen and (max-width: 767px) {
+    .quick-buttons-container {
+        width: calc(100vw - 20px);
+        max-width: calc(100vw - 20px);
+        margin: 18px 10px;
+        padding: 0;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    
+    .quick-buttons-container [data-testid="stButton"] > button {
+        font-size: 0.8rem !important;
+        padding: 7px 12px !important;
+        min-width: 80px !important;
+        max-width: 120px !important;
+        height: 38px !important;
+    }
+}
+
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+    .quick-buttons-container [data-testid="stButton"] > button {
+        font-size: 0.82rem !important;
+        padding: 8px 13px !important;
+        min-width: 85px !important;
+        max-width: 135px !important;
+        height: 40px !important;
+    }
+}
+
+/* Perplexity 스타일 검색창 - Streamlit 네이티브 input 스타일링 */
+.perplexity-search-container {
+    width: var(--content-width);
+    max-width: var(--content-max-width);
+    margin: 30px auto 40px auto;
+    padding: 0 20px;
+    box-sizing: border-box;
+    position: relative;
+}
+
+/* Streamlit input 컨테이너 스타일링 */
+.perplexity-search-container [data-testid="stTextInput"] {
+    margin: 0 !important;
+    position: relative;
+}
+
+.perplexity-search-container [data-testid="stTextInput"] > div {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03)) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    border-radius: 24px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    backdrop-filter: blur(12px) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1) !important;
+    overflow: hidden !important;
+    position: relative !important;
+}
+
+/* 포커스 상태 */
+.perplexity-search-container [data-testid="stTextInput"]:focus-within > div {
+    border-color: var(--accent-color) !important;
+    box-shadow: 0 0 0 3px rgba(79, 209, 197, 0.15), 0 8px 32px rgba(0, 0, 0, 0.15) !important;
+    transform: translateY(-1px) !important;
+}
+
+/* 검색 아이콘 추가 (CSS로) */
+.perplexity-search-container [data-testid="stTextInput"] > div::before {
+    content: '🔍';
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 1.1rem;
+    z-index: 2;
+    pointer-events: none;
+}
+
+/* Enter 아이콘 추가 (CSS로) */
+.perplexity-search-container [data-testid="stTextInput"] > div::after {
+    content: '↵';
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 1rem;
+    z-index: 2;
+    pointer-events: none;
+    transition: all 0.2s ease;
+}
+
+/* 포커스 시 Enter 아이콘 강조 */
+.perplexity-search-container [data-testid="stTextInput"]:focus-within > div::after {
+    color: var(--accent-color);
+}
+
+/* 실제 input 필드 스타일링 */
+.perplexity-search-container input {
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
+    padding: 16px 60px !important; /* 좌우 아이콘 공간 확보 */
+    font-size: 1rem !important;
+    color: var(--text-primary) !important;
+    width: 100% !important;
+    box-shadow: none !important;
+    font-family: var(--font-family) !important;
+    font-weight: 400 !important;
+    box-sizing: border-box !important;
+}
+
+.perplexity-search-container input::placeholder {
+    color: rgba(255, 255, 255, 0.5) !important;
+    font-weight: 400 !important;
+}
+
+/* 반응형 Perplexity 검색창 */
+@media screen and (max-width: 767px) {
+    .perplexity-search-container {
+        width: calc(100vw - 20px);
+        max-width: calc(100vw - 20px);
+        margin: 20px 10px 30px 10px;
+        padding: 0;
+    }
+    
+    .perplexity-search-container [data-testid="stTextInput"] > div {
+        border-radius: 20px !important;
+    }
+    
+    .perplexity-search-container [data-testid="stTextInput"] > div::before {
+        left: 16px;
+        font-size: 1rem;
+    }
+    
+    .perplexity-search-container [data-testid="stTextInput"] > div::after {
+        right: 16px;
+        font-size: 0.9rem;
+    }
+    
+    .perplexity-search-container input {
+        padding: 14px 50px !important;
+        font-size: 0.95rem !important;
+    }
+}
+
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+    .perplexity-search-container {
+        margin: 25px auto 35px auto;
+        padding: 0 15px;
+    }
+}
+
 /* 터치 디바이스 최적화 */
 @media (hover: none) and (pointer: coarse) {
     /* 터치 기기에서 호버 효과 제거 */
@@ -671,5 +1004,10 @@ section[data-testid="stMain"] div[data-testid="stMainBlockContainer"] [data-test
         width: 44px;
         height: 44px;
         margin: 8px 0;
+    }
+    
+    /* 터치에서 검색창 호버 제거 */
+    .perplexity-search-container [data-testid="stTextInput"]:focus-within > div {
+        transform: none !important;
     }
 }

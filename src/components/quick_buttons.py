@@ -47,45 +47,45 @@ def render_quick_buttons(
     columns_widths: Optional[List[float]] = None
 ) -> None:
     """
-    빠른 질문 버튼들을 렌더링합니다.
+    빠른 질문 버튼들을 Streamlit 네이티브로 렌더링하되 출처 버튼과 동일한 스타일 적용
     
     Args:
         buttons: 버튼 정의 리스트. None이면 DEFAULT_QUICK_BUTTONS 사용
         on_click: 버튼 클릭 시 실행할 콜백 함수. 쿼리 문자열을 인자로 받음
-        columns_widths: 각 컬럼의 너비 비율. None이면 자동 계산
+        columns_widths: 사용되지 않음 (하위 호환성을 위해 유지)
     """
     if buttons is None:
         buttons = DEFAULT_QUICK_BUTTONS
     
-    # 버튼 컨테이너
-    st.markdown('<div class="imfact-button-container">', unsafe_allow_html=True)
+    # 퀵버튼 전용 컨테이너 (출처와는 다른 독립적 디자인)
+    st.markdown(f"""
+    <div class="quick-buttons-container">
+    """, unsafe_allow_html=True)
     
-    # 컬럼 너비 설정
-    if columns_widths is None:
-        # 기본 너비 설정 (버튼 텍스트 길이에 따라 조정)
-        columns_widths = [0.9, 1, 0.8, 1, 1.1]
+    # Streamlit 컬럼으로 버튼 배치
+    cols = st.columns(len(buttons))
     
-    cols = st.columns(columns_widths)
-    
-    # 버튼 렌더링
     for i, button_def in enumerate(buttons):
-        if i < len(cols):
-            with cols[i]:
-                button_text = f"{button_def['icon']} {button_def['label']}"
-                if st.button(
-                    button_text, 
-                    key=button_def["key"], 
-                    use_container_width=True
-                ):
-                    if on_click:
-                        on_click(button_def["query"])
-                    else:
-                        # 기본 동작: 세션 상태에 질문 저장
-                        st.session_state.chat_input = button_def["query"]
-                        if hasattr(st.session_state, 'handle_user_input'):
-                            st.session_state.handle_user_input()
+        with cols[i]:
+            button_text = f"{button_def['icon']} {button_def['label']}"
+            if st.button(
+                button_text,
+                key=button_def["key"],
+                use_container_width=True,
+                help=f"질문: {button_def['query']}"
+            ):
+                if on_click:
+                    on_click(button_def["query"])
+                else:
+                    # 기본 동작: 세션 상태에 질문 저장
+                    st.session_state.chat_input = button_def["query"]
+                    if hasattr(st.session_state, 'handle_user_input'):
+                        st.session_state.handle_user_input()
     
-    st.markdown('</div>', unsafe_allow_html=True)
+    # 컨테이너 닫기
+    st.markdown("""
+    </div>
+    """, unsafe_allow_html=True)
 
 
 def create_custom_quick_button(

@@ -126,29 +126,7 @@ footer {
     color: rgba(255, 255, 255, 0.4);
 }
 
-/* 빠른 질문 버튼 컨테이너 */
-.imfact-button-container {
-    display: flex;
-    justify-content: center;
-    gap: 12px;
-    margin-bottom: 24px;
-    width: var(--content-width);
-    max-width: var(--content-max-width);
-    margin-left: auto;
-    margin-right: auto;
-    animation: fadeInUp 0.6s ease-out;
-}
-
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
+/* 퀵버튼은 이제 출처 버튼과 동일한 HTML/CSS 구조 사용 */
 
 /* Selectbox 스타일 */
 .stSelectbox > div > div > div {
@@ -227,15 +205,7 @@ footer {
         box-sizing: border-box !important;
     }
     
-    /* 모바일: 빠른 질문 버튼 컨테이너 */
-    .imfact-button-container {
-        width: calc(100vw - 20px);
-        max-width: calc(100vw - 20px);
-        margin-left: auto;
-        margin-right: auto;
-        flex-direction: column;
-        gap: 8px;
-    }
+    /* 퀵버튼은 출처 버튼과 동일한 반응형 처리 */
     
     /* 모바일: 텍스트 입력 */
     .stTextInput > div > div > input {

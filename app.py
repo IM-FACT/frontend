@@ -174,7 +174,8 @@ def generate_response(question):
             "role": "assistant",
             "content": backend_answer,
             "time": now,
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.now().isoformat(),
+            "sources": []  # 출처는 렌더링 시 자동 추출됨
         }
         
         # 채팅 기록에 응답 추가
@@ -219,25 +220,24 @@ if st.session_state.current_tab == "home":
         generate_response(last_question)
         st.rerun()
 
-    # 출처 섹션 - 출처가 있을 때만 표시
-    render_sources_section()
+    # 출처는 이제 각 메시지별로 표시됨 (render_sources_section 제거)
 
     # 빠른 질문 버튼 렌더링
     # handle_user_input 함수를 세션 상태에 저장하여 컨포넌트에서 사용 가능하게 함
     st.session_state.handle_user_input = handle_user_input
     render_quick_buttons()
 
-    # 검색 입력 필드 - 이전 작업물과 동일한 방식으로 복원
-    st.markdown('<div style="display: flex; justify-content: center; width: 100%; margin-top: 20px;">', unsafe_allow_html=True)
-    search_container = st.container()
-    with search_container:
-        st.text_input(
-            "환경, 기후, 지속가능성에 대해 무엇이든 물어보세요",
-            placeholder="🔍 예: 탄소중립이란 무엇인가요?",
-            label_visibility="collapsed",
-            key="chat_input",
-            on_change=handle_user_input
-        )
+    # Perplexity 스타일 검색창 - Streamlit 네이티브 기능 유지
+    st.markdown('<div class="perplexity-search-container">', unsafe_allow_html=True)
+    
+    st.text_input(
+        "질문을 입력하세요...",
+        placeholder="기후변화에 대해 무엇이든 질문하세요",
+        label_visibility="collapsed",
+        key="chat_input",
+        on_change=handle_user_input
+    )
+    
     st.markdown('</div>', unsafe_allow_html=True)
 
 elif st.session_state.current_tab == "history":
@@ -250,7 +250,7 @@ elif st.session_state.current_tab == "history":
     with col1:
         search_query = st.text_input(
             "대화 검색",
-            placeholder="🔍 대화 내용 검색...",
+            placeholder="🔍 대화 검색",
             key="search_history",
             label_visibility="collapsed"
         )
@@ -299,23 +299,29 @@ elif st.session_state.current_tab == "history":
         for session in sessions:
             is_current_session = session['id'] == st.session_state.current_session_id
             
-            # 세션 카드 컨테이너
+            # 세션 카드 컨테이너 - 더 넓은 버튼 영역
             with st.container():
-                col1, col2, col3 = st.columns([7, 1, 1])
+                col1, col2, col3 = st.columns([8, 1, 1])
                 
                 with col1:
                     # 세션 카드
-                    preview_text = session.get('title', '새 대화')
-                    if len(preview_text) > 50:
-                        preview_text = preview_text[:50] + "..."
+                    session_title = session.get('title', '새 대화')
+                    
+                    # 첫 번째 메시지에서 미리보기 생성
+                    messages = chat_storage.get_messages(session['id'])
+                    if messages:
+                        first_message = messages[0].get('content', '')
+                        preview_text = first_message[:80] + "..." if len(first_message) > 80 else first_message
+                    else:
+                        preview_text = "빈 대화"
                     
                     # 현재 세션 표시
                     current_indicator = "🔵 " if is_current_session else ""
                     
-                    # 세션 선택 버튼
+                    # 세션 선택 버튼 - 더 넓은 너비와 개선된 텍스트
                     button_type = "primary" if is_current_session else "secondary"
                     if st.button(
-                        f"{current_indicator}📝 {session['title']}\n{preview_text}",
+                        f"{current_indicator}📝 {session_title}\n💬 {preview_text}",
                         key=f"session_{session['id']}",
                         use_container_width=True,
                         type=button_type
@@ -372,8 +378,7 @@ elif st.session_state.current_tab == "history":
                             st.session_state.sessions_list = chat_storage.get_all_sessions()
                             st.rerun()
             
-            # 구분선
-            st.markdown("---")
+            # 구분선 제거 - CSS 마진으로 충분한 간격 확보
     else:
         st.info("저장된 대화가 없습니다. 새 대화를 시작해보세요!")
     

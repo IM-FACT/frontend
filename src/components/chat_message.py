@@ -38,8 +38,7 @@ def render_user_message(message: Dict[str, str]) -> None:
 def render_assistant_message(message: Dict[str, any]) -> None:
     """
     어시스턴트 메시지를 렌더링합니다.
-    - 답변 본문만 메시지 컨테이너에 렌더링
-    - 출처는 추출해서 반환 (별도 렌더링용)
+    메시지와 출처를 함께 표시 (Perplexity 스타일)
     """
     content = message["content"]
     
@@ -48,52 +47,60 @@ def render_assistant_message(message: Dict[str, any]) -> None:
     if "T" in str(time_display):  # ISO 형식이면 시간만 추출
         time_display = time_display.split("T")[1][:5] if "T" in time_display else time_display
 
-    # 답변에서 출처 URL 자동 추출 (다양한 패턴 지원)
-    sources = []
-    
-    # 1. 번호가 있는 URL: "1. https://example.com" 
-    numbered_url_pattern = r"^(\d+)\.\s*(https?://\S+)"
-    
-    # 2. 일반 URL: "https://example.com" 또는 "출처: https://example.com"
-    general_url_pattern = r"(https?://[^\s]+)"
-    
-    # 3. 도메인만 있는 경우: "news.kbs.co.kr" -> "https://news.kbs.co.kr"로 변환
-    domain_pattern = r"(?:^|\s)([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})(?:\s|$)"
-    
-    lines = content.strip().split("\n")
-    body_lines = []
-    
-    for line in lines:
-        line_processed = False
+    # 기존에 저장된 출처가 있으면 사용, 없으면 새로 추출
+    if "sources" in message and message["sources"]:
+        sources = message["sources"]
+        body = content  # 이미 처리된 본문
+    else:
+        # 답변에서 출처 URL 자동 추출 (다양한 패턴 지원)
+        sources = []
         
-        # 1. 번호가 있는 URL 패턴 확인
-        m = re.match(numbered_url_pattern, line.strip())
-        if m:
-            num, url = m.groups()
-            sources.append({"num": num, "url": url})
-            line_processed = True
+        # 1. 번호가 있는 URL: "1. https://example.com" 
+        numbered_url_pattern = r"^(\d+)\.\s*(https?://\S+)"
         
-        # 2. 일반 URL 패턴에서 URL 추출
-        elif not line_processed:
-            urls = re.findall(general_url_pattern, line)
-            for url in urls:
-                sources.append({"num": str(len(sources) + 1), "url": url})
+        # 2. 일반 URL: "https://example.com" 또는 "출처: https://example.com"
+        general_url_pattern = r"(https?://[^\s]+)"
         
-        # 3. 도메인만 있는 경우 (news.kbs.co.kr 같은)
-        if not line_processed and not re.search(general_url_pattern, line):
-            domains = re.findall(domain_pattern, line)
-            for domain in domains:
-                # 일반적인 도메인이고 URL이 아닌 경우에만 처리
-                if "." in domain and not domain.startswith("http") and len(domain.split(".")) >= 2:
-                    url = f"https://{domain}"
+        # 3. 도메인만 있는 경우: "news.kbs.co.kr" -> "https://news.kbs.co.kr"로 변환
+        domain_pattern = r"(?:^|\s)([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})(?:\s|$)"
+        
+        lines = content.strip().split("\n")
+        body_lines = []
+        
+        for line in lines:
+            line_processed = False
+            
+            # 1. 번호가 있는 URL 패턴 확인
+            m = re.match(numbered_url_pattern, line.strip())
+            if m:
+                num, url = m.groups()
+                sources.append({"num": num, "url": url})
+                line_processed = True
+            
+            # 2. 일반 URL 패턴에서 URL 추출
+            elif not line_processed:
+                urls = re.findall(general_url_pattern, line)
+                for url in urls:
                     sources.append({"num": str(len(sources) + 1), "url": url})
-                    line_processed = True
+            
+            # 3. 도메인만 있는 경우 (news.kbs.co.kr 같은)
+            if not line_processed and not re.search(general_url_pattern, line):
+                domains = re.findall(domain_pattern, line)
+                for domain in domains:
+                    # 일반적인 도메인이고 URL이 아닌 경우에만 처리
+                    if "." in domain and not domain.startswith("http") and len(domain.split(".")) >= 2:
+                        url = f"https://{domain}"
+                        sources.append({"num": str(len(sources) + 1), "url": url})
+                        line_processed = True
+            
+            # URL/도메인이 포함된 줄이 아니면 본문에 추가
+            if not line_processed:
+                body_lines.append(line)
         
-        # URL/도메인이 포함된 줄이 아니면 본문에 추가
-        if not line_processed:
-            body_lines.append(line)
-    
-    body = "\n".join(body_lines).strip()
+        body = "\n".join(body_lines).strip()
+        
+        # 메시지에 출처 저장 (다음번 렌더링을 위해)
+        message["sources"] = sources
 
     # 특수 태그 변환 (인용문, 주요 팩트 등)
     body = body.replace("<citation>", '<div class="imfact-citation">').replace("</citation>", '</div>')
@@ -117,14 +124,53 @@ def render_assistant_message(message: Dict[str, any]) -> None:
     </div>
     """, unsafe_allow_html=True)
     
-    # 출처는 세션 상태에 저장해서 별도 렌더링
+    # 출처가 있으면 메시지 바로 아래에 표시 (Perplexity 스타일)
     if sources:
-        if 'current_sources' not in st.session_state:
-            st.session_state.current_sources = []
-        st.session_state.current_sources = sources
-    else:
-        # 출처가 없으면 현재 출처 목록 초기화
-        st.session_state.current_sources = []
+        render_message_sources(sources)
+
+
+def render_message_sources(sources: List[Dict[str, str]]) -> None:
+    """
+    특정 메시지의 출처를 렌더링합니다. (메시지별 출처)
+    
+    Args:
+        sources: 출처 정보 리스트
+    """
+    if not sources:
+        return
+    
+    # Perplexity 스타일 출처 섹션
+    st.markdown(f"""
+    <div class="perplexity-sources-section">
+        <div class="sources-header">
+            <span class="sources-title">출처</span>
+            <span class="sources-count">{len(sources)} 개</span>
+        </div>
+        <div class="sources-grid">
+    """, unsafe_allow_html=True)
+    
+    # 각 출처를 개별적으로 렌더링
+    for i, source in enumerate(sources):
+        # 도메인 추출
+        domain_match = re.search(r'https?://(?:www\.)?([^/]+)', source['url'])
+        domain = domain_match.group(1) if domain_match else "링크"
+        
+        # 도메인이 너무 길면 줄임
+        if len(domain) > 15:
+            domain = domain[:12] + "..."
+        
+        # 각 출처 버튼을 개별 HTML로 렌더링
+        st.markdown(f"""
+        <a href="{source['url']}" target="_blank" class="source-link-button">
+            🔗 {domain}
+        </a>
+        """, unsafe_allow_html=True)
+    
+    # 컨테이너 닫기
+    st.markdown("""
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
 
 def render_typing_indicator() -> None:
@@ -149,36 +195,10 @@ def render_typing_indicator() -> None:
 
 def render_sources_section() -> None:
     """
-    Perplexity 스타일의 출처 섹션을 렌더링합니다.
-    세션 상태에 저장된 출처들을 메시지 밖 별도 영역에 표시
+    전역 출처 섹션 - 더 이상 사용하지 않음
+    메시지별 출처로 대체됨
     """
-    if hasattr(st.session_state, 'current_sources') and st.session_state.current_sources:
-        sources = st.session_state.current_sources
-        
-        # Perplexity 스타일 출처 섹션
-        st.markdown("""
-        <div class="perplexity-sources-section">
-            <div class="sources-header">
-                <span class="sources-title">📚 출처</span>
-                <span class="sources-count">{} 개</span>
-            </div>
-        </div>
-        """.format(len(sources)), unsafe_allow_html=True)
-        
-        # 출처 버튼들을 한 줄로 배치
-        cols = st.columns(min(len(sources), 4))  # 최대 4개 컬럼
-        for i, source in enumerate(sources):
-            with cols[i % 4]:
-                # 도메인 추출
-                import re
-                domain_match = re.search(r'https?://(?:www\.)?([^/]+)', source['url'])
-                domain = domain_match.group(1) if domain_match else "링크"
-                
-                st.link_button(
-                    f"🔗 {domain}",
-                    source['url'],
-                    use_container_width=True
-                )
+    pass  # 빈 함수로 유지 (기존 호출 코드와의 호환성을 위해)
 
 
 def render_chat_message(message: Dict[str, any]) -> None:

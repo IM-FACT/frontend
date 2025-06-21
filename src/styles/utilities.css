@@ -1,67 +1,62 @@
-/* 버튼 스타일 */
-.imfact-button-container [data-testid="stHorizontalBlock"] > div[data-testid="stVerticalBlock"] > div[data-testid="stButton"] > button,
+/* 기존 Streamlit 버튼 스타일 (퀵버튼 외부용) */
 .stButton > button {
-    background: rgba(20,25,30,0.85) !important;
-    border: 1px solid rgba(255,255,255,0.12) !important;
-    border-radius: var(--border-radius) !important;
-    padding: 10px 2px !important;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    border-radius: 10px;
+    padding: 12px 20px;
+    font-weight: 500;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.stButton > button:hover {
+    background: linear-gradient(135deg, rgba(79, 209, 197, 0.1), rgba(79, 209, 197, 0.05));
+    border-color: rgba(79, 209, 197, 0.4);
+    color: var(--accent-color);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(79, 209, 197, 0.2);
+}
+
+/* 퀵버튼은 이제 HTML로 구현되어 출처 버튼과 동일한 CSS 사용 */
+
+/* 입력 필드 스타일 개선 */
+.stTextInput > div {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02)) !important;
+    border: 1px solid rgba(79, 209, 197, 0.15) !important;
+    border-radius: 16px !important;
     color: var(--text-primary) !important;
-    font-size: 0.85rem !important;
-    font-weight: 500 !important;
-    cursor: pointer !important;
-    transition: all 0.2s ease !important;
-    display: inline-flex !important;
+    backdrop-filter: blur(8px) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+    display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    gap: 6px !important;
-    white-space: nowrap !important;
-    flex: 1 !important;
-    min-width: 0 !important;
-    width: 100% !important;
-    height: 50px !important;
-    line-height: normal !important;
-    margin: 0 auto !important;
-    overflow: hidden !important;
-}
-.imfact-button-container [data-testid="stHorizontalBlock"] > div[data-testid="stVerticalBlock"] > div[data-testid="stButton"] > button:hover,
-.stButton > button:hover {
-    background: rgba(79,209,197,0.13) !important;
-    color: var(--accent-color) !important;
-    border-color: var(--accent-color) !important;
-}
-
-/* 버튼 클릭시/포커스 상태 스타일 */
-.stButton > button:active, 
-.stButton > button:focus,
-.imfact-button-container [data-testid="stHorizontalBlock"] > div[data-testid="stVerticalBlock"] > div[data-testid="stButton"] > button:active,
-.imfact-button-container [data-testid="stHorizontalBlock"] > div[data-testid="stVerticalBlock"] > div[data-testid="stButton"] > button:focus {
-    background: rgba(79,209,197,0.2) !important;
-    color: var(--accent-color) !important;
-    border-color: var(--accent-color) !important;
-    box-shadow: none !important;
-    outline: none !important;
-}
-
-/* 입력 필드 스타일 */
-.stTextInput > div {
-    background-color: rgba(255, 255, 255, 0.04) !important;
-    border: 1px solid var(--border-color) !important;
-    border-radius: 20px !important;
-    color: var(--text-primary) !important;
 }
 
 .stTextInput > div > div > input {
     color: var(--text-primary) !important;
     font-family: var(--font-family) !important;
+    background: transparent !important;
+    border: none !important;
+    padding: 14px 18px !important;
+    font-size: 0.95rem !important;
+    display: flex !important;
+    align-items: center !important;
+    line-height: 1.2 !important;
+    vertical-align: middle !important;
+}
+
+.stTextInput > div:focus-within {
+    border-color: var(--accent-color) !important;
+    box-shadow: 0 0 0 3px rgba(79, 209, 197, 0.2), 0 6px 20px rgba(0, 0, 0, 0.15) !important;
 }
 
 /* 채팅 입력 컨테이너 - 채팅 메시지와 동일한 너비로 일관성 유지 */
 .chat-input-container {
     width: var(--content-width) !important;
     max-width: var(--content-max-width) !important;
-    margin: 20px auto;
-    display: flex;
-    justify-content: center;
+    margin: 25px auto !important;
+    display: flex !important;
+    justify-content: center !important;
 }
 
 .chat-input-container .stTextInput {
@@ -71,53 +66,30 @@
 
 /* 채팅 입력 필드 개선된 스타일 */
 .stTextInput > div > div > input {
-    background: rgba(255, 255, 255, 0.04) !important;
-    border: 1px solid rgba(255, 255, 255, 0.08) !important;
-    border-radius: 12px !important;
+    background: transparent !important;
+    border: none !important;
     color: #eef2f7 !important;
-    padding: 14px 20px !important;
+    padding: 16px 20px !important;
     font-size: 1rem !important;
     transition: all 0.3s ease !important;
     width: 100% !important;
     box-sizing: border-box !important;
+    display: flex !important;
+    align-items: center !important;
+    line-height: 1.2 !important;
+    vertical-align: middle !important;
 }
 
 .stTextInput > div > div > input:focus {
-    border-color: var(--accent-color) !important;
-    box-shadow: 0 0 0 2px rgba(79, 209, 197, 0.2) !important;
     outline: none !important;
 }
 
 .stTextInput > div > div > input::placeholder {
-    color: rgba(255, 255, 255, 0.4) !important;
+    color: rgba(255, 255, 255, 0.6) !important;
+    font-size: 0.9rem !important;
 }
 
-/* Streamlit 컬럼 정렬 개선 */
-[data-testid="stHorizontalBlock"] {
-    display: flex !important;
-    justify-content: center !important;
-    gap: 2px !important;
-    width: 100% !important;
-    max-width: var(--content-width) !important;
-    margin: 0 auto !important;
-}
-
-/* 각 컬럼의 너비와 정렬 조정 */
-[data-testid="stHorizontalBlock"] > [data-testid="stVerticalBlock"] {
-    flex: 1 !important;
-    min-width: 0 !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-}
-
-/* 각 버튼 열의 너비 제한 */
-.row-widget.stButton > button {
-    width: 100% !important;
-    margin: 0 auto !important;
-}
-
-/* 채팅 기록 카드 스타일 */
+/* 채팅 기록 카드 스타일 개선 */
 .chat-history-list {
     width: var(--content-width);
     max-width: var(--content-max-width);
@@ -128,25 +100,104 @@
 }
 
 .chat-session-card {
-    background-color: var(--bg-secondary);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
     border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 16px;
-    transition: all 0.2s ease;
+    border-radius: 12px;
+    padding: 18px 20px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(8px);
+    position: relative;
+    overflow: hidden;
+}
+
+.chat-session-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(79, 209, 197, 0.1), transparent);
+    transition: left 0.6s ease;
 }
 
 .chat-session-card:hover {
-    background-color: rgba(79, 209, 197, 0.05);
-    border-color: rgba(79, 209, 197, 0.2);
+    background: linear-gradient(135deg, rgba(79, 209, 197, 0.08), rgba(79, 209, 197, 0.03));
+    border-color: rgba(79, 209, 197, 0.4);
+    transform: translateY(-2px); 
+}
+
+.chat-session-card:hover::before {
+    left: 100%;
 }
 
 .chat-session-title {
     font-weight: 600;
     font-size: 1rem;
     margin-bottom: 6px;
+    color: var(--text-primary);
 }
 
 .chat-session-preview {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     color: var(--text-secondary);
+    line-height: 1.4;
+}
+
+/* 대화 기록 탭 버튼 스타일 개선 */
+.chat-history-container [data-testid="stButton"] > button {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02)) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 12px !important;
+    padding: 16px 20px !important;
+    color: var(--text-primary) !important;
+    font-size: 0.9rem !important;
+    font-weight: 500 !important;
+    text-align: left !important;
+    line-height: 1.4 !important;
+    white-space: pre-line !important;
+    width: 100% !important;
+    min-height: 60px !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    backdrop-filter: blur(8px) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+.chat-history-container [data-testid="stButton"] > button:hover {
+    background: linear-gradient(135deg, rgba(79, 209, 197, 0.08), rgba(79, 209, 197, 0.03)) !important;
+    border-color: rgba(79, 209, 197, 0.4) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(79, 209, 197, 0.15) !important;
+}
+
+.chat-history-container [data-testid="stButton"] > button[data-baseweb="button"][kind="primary"] {
+    background: linear-gradient(135deg, rgba(79, 209, 197, 0.15), rgba(79, 209, 197, 0.08)) !important;
+    border-color: var(--accent-color) !important;
+    color: var(--accent-color) !important;
+    box-shadow: 0 0 0 2px rgba(79, 209, 197, 0.2), 0 4px 16px rgba(79, 209, 197, 0.2) !important;
+}
+
+/* 대화 기록 컨테이너 너비 조정 */
+.chat-history-container {
+    width: var(--content-width);
+    max-width: var(--content-max-width);
+    margin: 0 auto;
+    padding: 0 20px;
+    box-sizing: border-box;
+}
+
+/* 반응형 스타일 */
+@media screen and (max-width: 767px) {
+    .chat-history-container {
+        width: calc(100vw - 20px);
+        max-width: calc(100vw - 20px);
+        margin: 0 10px;
+        padding: 0;
+    }
+    
+    .chat-history-container [data-testid="stButton"] > button {
+        padding: 14px 16px !important;
+        font-size: 0.85rem !important;
+        min-height: 55px !important;
+    }
 }
