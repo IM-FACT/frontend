@@ -24,8 +24,8 @@ from src.components.chat_message import render_sources_section
 # 환경 변수 로드
 load_dotenv()
 
-# 백엔드 API 주소 환경변수 처리
-BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:8000")
+# 백엔드 API 주소 환경변수 처리 - EC2 서버 연결
+BACKEND_URL = os.getenv("BACKEND_URL", "http://3.80.116.240:8000")
 
 def ask_backend(question: str) -> str:
     """
@@ -42,7 +42,7 @@ def ask_backend(question: str) -> str:
         resp = requests.post(
             f"{BACKEND_URL}/im-fact/ask",
             json={"content": question},
-            timeout=120,  # 2분으로 연장
+            timeout=360,  # 6분으로 연장
             headers={"Content-Type": "application/json"}
         )
         
