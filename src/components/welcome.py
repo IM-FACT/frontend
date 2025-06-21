@@ -55,7 +55,7 @@ def render_home_welcome() -> None:
     render_logo()
     render_welcome_message(
         "환경, 기후변화, 지속가능성에 관한 신뢰할 수 있는 정보를 제공합니다. "
-        "IM.FACT는 온라인 자료를 기반으로 과학적이고 균형 잡힌 답변을 제공합니다."
+        "IM.FACT는 신뢰성 있는 자료를 기반으로 과학적이고 균형 잡힌 답변을 제공합니다."
     )
 
 
