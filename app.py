@@ -5,6 +5,7 @@ import os
 import time
 from datetime import datetime
 import sys
+import re
 
 # 프로젝트 루트 디렉토리를 PATH에 추가
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -16,7 +17,6 @@ from src.components import (
     render_typing_indicator, 
     render_sidebar, 
     handle_tab_change, 
-    render_quick_buttons,
     render_tab_welcome
 )
 from src.components.chat_message import render_sources_section
@@ -25,7 +25,7 @@ from src.components.chat_message import render_sources_section
 load_dotenv()
 
 # 백엔드 API 주소 환경변수 처리 - EC2 서버 연결
-BACKEND_URL = os.getenv("BACKEND_URL", "http://3.80.116.240:8000")
+BACKEND_URL = os.getenv("BACKEND_URL")
 
 def ask_backend(question: str) -> str:
     """
@@ -42,7 +42,7 @@ def ask_backend(question: str) -> str:
         resp = requests.post(
             f"{BACKEND_URL}/im-fact/ask",
             json={"content": question},
-            timeout=360,  # 6분으로 연장
+            timeout=240,  # 4분으로 연장
             headers={"Content-Type": "application/json"}
         )
         
@@ -122,25 +122,49 @@ def handle_user_input():
     """
     user_input = st.session_state.chat_input
     if user_input and user_input.strip():
+        # 줄바꿈 정리 (연속된 줄바꿈을 하나로, 앞뒤 공백 제거)
+        cleaned_input = user_input.strip()
+        # 연속된 줄바꿈을 최대 2개로 제한
+        cleaned_input = re.sub(r'\n{3,}', '\n\n', cleaned_input)
+        
         # 입력 검증
-        if len(user_input.strip()) < 2:
+        if len(cleaned_input) < 2:
             st.warning("⚠️ 질문을 더 자세히 입력해주세요.")
             return
         
-        if len(user_input) > 1000:
-            st.warning("⚠️ 질문이 너무 깁니다. 1000자 이내로 입력해주세요.")
+        if len(cleaned_input) > 2000:
+            st.warning("⚠️ 질문이 너무 깁니다. 2000자 이내로 입력해주세요.")
             return
         
         now = datetime.now().strftime("%H:%M")
         message = {
             "role": "user",
-            "content": user_input.strip(),
+            "content": cleaned_input,
             "time": now,
             "timestamp": datetime.now().isoformat()
         }
         
         # 즉시 UI에 추가
         st.session_state.chat_history.append(message)
+        
+        # 첫 번째 질문인 경우 세션 제목을 자동으로 질문으로 설정
+        if len(st.session_state.chat_history) == 1:
+            try:
+                # 제목용으로 질문을 10자로 제한하고 "..." 추가
+                title = cleaned_input[:13] + "..." if len(cleaned_input) > 16 else cleaned_input
+                # 새 세션을 제목과 함께 생성 (기존 세션 교체)
+                new_session_id = chat_storage.create_session(title)
+                # 기존 임시 세션을 새 세션으로 교체
+                old_session_id = st.session_state.current_session_id
+                st.session_state.current_session_id = str(new_session_id)
+                
+                # 기존 임시/오프라인 세션이었다면 삭제
+                if old_session_id.startswith("offline_"):
+                    chat_storage.delete_session(old_session_id)
+                    
+                st.session_state.sessions_list = chat_storage.get_all_sessions()
+            except Exception as title_error:
+                st.warning(f"📝 세션 제목 설정 중 오류: {str(title_error)}")
         
         # 메시지 저장 (백엔드 API) - 실패해도 진행
         try:
@@ -152,6 +176,120 @@ def handle_user_input():
         st.session_state.chat_input = ""
         st.session_state.is_typing = True
         # st.rerun()을 콜백에서 제거 (자동으로 재실행됨)
+
+def handle_textarea_keydown():
+    """
+    텍스트 영역 키보드 이벤트 처리를 위한 JavaScript
+    Enter: 검색 실행, Shift+Enter: 줄바꿈
+    자동 높이 조절 기능 포함
+    """
+    return """
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        function autoResizeTextarea(textarea) {
+            // 텍스트 영역 자동 높이 조절
+            function adjustHeight() {
+                // 스크롤 높이를 체크하기 위해 임시로 높이를 최소값으로 설정
+                textarea.style.height = 'auto';
+                
+                // 실제 필요한 높이 계산
+                const scrollHeight = textarea.scrollHeight;
+                const minHeight = 80; // 최소 높이 (CSS와 동일)
+                const maxHeight = window.innerWidth <= 767 ? 250 : 
+                                 window.innerWidth <= 1024 ? 275 : 300; // 반응형 최대 높이
+                
+                // 최소/최대 높이 범위 내에서 조절
+                const newHeight = Math.max(minHeight, Math.min(scrollHeight, maxHeight));
+                textarea.style.height = newHeight + 'px';
+                
+                // 컨테이너 높이도 조절
+                const container = textarea.closest('[data-testid="stTextArea"] > div');
+                if (container) {
+                    container.style.minHeight = newHeight + 'px';
+                }
+                
+                // 최대 높이에 도달했으면 스크롤 표시
+                if (scrollHeight > maxHeight) {
+                    textarea.style.overflowY = 'auto';
+                } else {
+                    textarea.style.overflowY = 'hidden';
+                }
+            }
+            
+            // 입력 이벤트에 높이 조절 연결
+            textarea.addEventListener('input', adjustHeight);
+            textarea.addEventListener('paste', function() {
+                setTimeout(adjustHeight, 10); // paste 후 잠시 대기
+            });
+            
+            // 초기 높이 설정
+            setTimeout(adjustHeight, 100);
+            
+            return adjustHeight;
+        }
+        
+        function setupTextAreaHandlers() {
+            const textareas = document.querySelectorAll('[data-testid="stTextArea"] textarea');
+            
+            textareas.forEach(function(textarea) {
+                // 이미 핸들러가 설정되어 있으면 건너뛰기
+                if (textarea.hasAttribute('data-enter-handler')) {
+                    return;
+                }
+                textarea.setAttribute('data-enter-handler', 'true');
+                
+                // 자동 높이 조절 설정
+                const adjustHeight = autoResizeTextarea(textarea);
+                
+                // 키보드 이벤트 처리
+                textarea.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        if (!e.shiftKey) {
+                            // Enter만 눌렀을 때: 검색 실행
+                            e.preventDefault();
+                            
+                            // Streamlit의 onChange 이벤트 트리거
+                            const event = new Event('input', { bubbles: true });
+                            textarea.dispatchEvent(event);
+                            
+                            // 약간의 지연 후 버튼 클릭 시뮬레이션
+                            setTimeout(function() {
+                                const changeEvent = new Event('change', { bubbles: true });
+                                textarea.dispatchEvent(changeEvent);
+                            }, 10);
+                        } else {
+                            // Shift+Enter: 줄바꿈 후 높이 조절
+                            setTimeout(adjustHeight, 10);
+                        }
+                    }
+                });
+                
+                // 창 크기 변경 시 높이 재조절
+                window.addEventListener('resize', function() {
+                    setTimeout(adjustHeight, 100);
+                });
+            });
+        }
+        
+        // 초기 설정
+        setupTextAreaHandlers();
+        
+        // MutationObserver로 동적 요소 감지
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.type === 'childList') {
+                    setupTextAreaHandlers();
+                }
+            });
+        });
+        
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+    });
+    </script>
+    """
 
 # IM.FACT 응답 생성
 def generate_response(question):
@@ -222,20 +360,20 @@ if st.session_state.current_tab == "home":
 
     # 출처는 이제 각 메시지별로 표시됨 (render_sources_section 제거)
 
-    # 빠른 질문 버튼 렌더링
-    # handle_user_input 함수를 세션 상태에 저장하여 컨포넌트에서 사용 가능하게 함
-    st.session_state.handle_user_input = handle_user_input
-    render_quick_buttons()
-
-    # Perplexity 스타일 검색창 - Streamlit 네이티브 기능 유지
+    # Perplexity 스타일 검색창 - Streamlit 네이티브 기능 유지, textarea로 변경
     st.markdown('<div class="perplexity-search-container">', unsafe_allow_html=True)
     
-    st.text_input(
+    # JavaScript로 키보드 이벤트 처리
+    st.markdown(handle_textarea_keydown(), unsafe_allow_html=True)
+    
+    st.text_area(
         "질문을 입력하세요...",
         placeholder="기후변화에 대해 무엇이든 질문하세요",
         label_visibility="collapsed",
         key="chat_input",
-        on_change=handle_user_input
+        on_change=handle_user_input,
+        height=80,  # 기본 높이 늘림
+        max_chars=2000  # 최대 글자 수 제한
     )
     
     st.markdown('</div>', unsafe_allow_html=True)
@@ -246,38 +384,14 @@ elif st.session_state.current_tab == "history":
     
     # 검색 바 - 중앙 집중형 컨테이너로 감싸기
     st.markdown('<div class="chat-history-container">', unsafe_allow_html=True)
-    col1, col2 = st.columns([3, 1])
-    with col1:
-        search_query = st.text_input(
-            "대화 검색",
-            placeholder="🔍 대화 검색",
-            key="search_history",
-            label_visibility="collapsed"
-        )
-    with col2:
-        if st.button("새 대화", key="new_chat_btn", use_container_width=True):
-            # 새로운 대화 세션 생성
-            try:
-                new_session_id = chat_storage.create_session("새 대화")
-                st.session_state.current_session_id = str(new_session_id)  # 문자열로 변환
-                st.session_state.chat_history = []
-                st.session_state.current_tab = "home"
-                # 세션 목록 업데이트
-                st.session_state.sessions_list = chat_storage.get_all_sessions()
-                st.query_params.tab = "home"
-                st.success("✅ 새 대화가 시작되었습니다!")
-                st.rerun()
-            except Exception as e:
-                st.error(f"❌ 새 대화 생성 실패: {str(e)}")
-                # 오프라인 세션으로 대체
-                import uuid
-                offline_id = f"offline_{uuid.uuid4().hex[:8]}"
-                st.session_state.current_session_id = offline_id
-                st.session_state.chat_history = []
-                st.session_state.current_tab = "home"
-                st.query_params.tab = "home"
-                st.warning("💾 오프라인 대화로 시작합니다.")
-                st.rerun()
+    
+    # 검색창을 전체 너비로 사용
+    search_query = st.text_input(
+        "대화 검색",
+        placeholder="🔍 대화 검색",
+        key="search_history",
+        label_visibility="collapsed"
+    )
     
     # 대화 목록 가져오기 및 정렬
     try:
@@ -299,26 +413,31 @@ elif st.session_state.current_tab == "history":
         for session in sessions:
             is_current_session = session['id'] == st.session_state.current_session_id
             
-            # 세션 카드 컨테이너 - 더 넓은 버튼 영역
+            # 세션 카드 컨테이너 - 2컬럼으로 최적화
             with st.container():
-                col1, col2, col3 = st.columns([8, 1, 1])
+                col1, col2 = st.columns([6, 1])
                 
                 with col1:
                     # 세션 카드
                     session_title = session.get('title', '새 대화')
                     
-                    # 첫 번째 메시지에서 미리보기 생성
+                    # 메시지 개수와 시간 정보로 미리보기 생성
                     messages = chat_storage.get_messages(session['id'])
                     if messages:
-                        first_message = messages[0].get('content', '')
-                        preview_text = first_message[:80] + "..." if len(first_message) > 80 else first_message
+                        message_count = len(messages)
+                        created_at = session.get('created_at', '')
+                        if created_at and 'T' in created_at:
+                            date_part = created_at.split('T')[0]
+                            preview_text = f"{message_count}개 메시지 • {date_part}"
+                        else:
+                            preview_text = f"{message_count}개 메시지"
                     else:
                         preview_text = "빈 대화"
                     
                     # 현재 세션 표시
                     current_indicator = "🔵 " if is_current_session else ""
                     
-                    # 세션 선택 버튼 - 더 넓은 너비와 개선된 텍스트
+                    # 세션 선택 버튼 - 제목과 메타 정보 분리
                     button_type = "primary" if is_current_session else "secondary"
                     if st.button(
                         f"{current_indicator}📝 {session_title}\n💬 {preview_text}",
@@ -333,14 +452,8 @@ elif st.session_state.current_tab == "history":
                         st.rerun()
                 
                 with col2:
-                    # 제목 편집 버튼
-                    if st.button("✏️", key=f"edit_{session['id']}", help="제목 편집"):
-                        st.session_state[f"editing_{session['id']}"] = True
-                        st.rerun()
-                
-                with col3:
-                    # 삭제 버튼
-                    if st.button("🗑️", key=f"delete_{session['id']}", help="대화 삭제"):
+                    # 삭제 버튼 - 더 큰 크기로 개선
+                    if st.button("🗑️ 삭제", key=f"delete_{session['id']}", help="대화 삭제", use_container_width=True):
                         try:
                             if chat_storage.delete_session(session['id']):
                                 st.session_state.sessions_list = chat_storage.get_all_sessions()
@@ -360,27 +473,37 @@ elif st.session_state.current_tab == "history":
                         except Exception as e:
                             st.error(f"❌ 대화 삭제 중 오류 발생: {str(e)}")
             
-            # 제목 편집 모드
-            if st.session_state.get(f"editing_{session['id']}", False):
-                with st.container():
-                    col1, col2 = st.columns([3, 1])
-                    with col1:
-                        new_title = st.text_input(
-                            "새 제목",
-                            value=session['title'],
-                            key=f"title_input_{session['id']}",
-                            label_visibility="collapsed"
-                        )
-                    with col2:
-                        if st.button("저장", key=f"save_title_{session['id']}"):
-                            # update_session_title은 현재 미구현
-                            st.session_state[f"editing_{session['id']}"] = False
-                            st.session_state.sessions_list = chat_storage.get_all_sessions()
-                            st.rerun()
+            # 제목 편집 기능 제거 - 첫 번째 질문이 자동으로 제목이 됨
             
             # 구분선 제거 - CSS 마진으로 충분한 간격 확보
     else:
         st.info("저장된 대화가 없습니다. 새 대화를 시작해보세요!")
+    
+    # 새 대화 버튼을 하단에 배치
+    st.markdown("---")
+    if st.button("➕ 새 대화 시작", key="new_chat_btn", use_container_width=True, type="primary"):
+        # 새로운 대화 세션 생성
+        try:
+            new_session_id = chat_storage.create_session("새 대화")
+            st.session_state.current_session_id = str(new_session_id)  # 문자열로 변환
+            st.session_state.chat_history = []
+            st.session_state.current_tab = "home"
+            # 세션 목록 업데이트
+            st.session_state.sessions_list = chat_storage.get_all_sessions()
+            st.query_params.tab = "home"
+            st.success("✅ 새 대화가 시작되었습니다!")
+            st.rerun()
+        except Exception as e:
+            st.error(f"❌ 새 대화 생성 실패: {str(e)}")
+            # 오프라인 세션으로 대체
+            import uuid
+            offline_id = f"offline_{uuid.uuid4().hex[:8]}"
+            st.session_state.current_session_id = offline_id
+            st.session_state.chat_history = []
+            st.session_state.current_tab = "home"
+            st.query_params.tab = "home"
+            st.warning("💾 오프라인 대화로 시작합니다.")
+            st.rerun()
     
     st.markdown('</div>', unsafe_allow_html=True)
 

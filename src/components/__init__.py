@@ -14,12 +14,7 @@ from .sidebar import (
     get_tab_info,
     SIDEBAR_ITEMS
 )
-from .quick_buttons import (
-    render_quick_buttons,
-    create_custom_quick_button,
-    get_category_buttons,
-    DEFAULT_QUICK_BUTTONS
-)
+# 퀵버튼 제거됨
 from .welcome import (
     render_logo,
     render_welcome_message,
@@ -39,10 +34,6 @@ __all__ = [
     'handle_tab_change',
     'get_tab_info',
     'SIDEBAR_ITEMS',
-    'render_quick_buttons',
-    'create_custom_quick_button',
-    'get_category_buttons',
-    'DEFAULT_QUICK_BUTTONS',
     'render_logo',
     'render_welcome_message',
     'render_home_welcome',

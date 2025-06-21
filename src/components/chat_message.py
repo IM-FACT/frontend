@@ -139,38 +139,35 @@ def render_message_sources(sources: List[Dict[str, str]]) -> None:
     if not sources:
         return
     
-    # Perplexity 스타일 출처 섹션
-    st.markdown(f"""
-    <div class="perplexity-sources-section">
-        <div class="sources-header">
-            <span class="sources-title">출처</span>
-            <span class="sources-count">{len(sources)} 개</span>
-        </div>
-        <div class="sources-grid">
-    """, unsafe_allow_html=True)
-    
-    # 각 출처를 개별적으로 렌더링
+    # 출처 버튼들을 그리드 없이 직접 렌더링
+    source_buttons_html = '<div class="sources-grid">'
     for i, source in enumerate(sources):
-        # 도메인 추출
+        # 도메인 추출 및 정리
         domain_match = re.search(r'https?://(?:www\.)?([^/]+)', source['url'])
-        domain = domain_match.group(1) if domain_match else "링크"
+        if domain_match:
+            domain = domain_match.group(1)
+            
+            # 일반적인 도메인 정리
+            if domain.startswith('m.'):
+                domain = domain[2:]  # 모바일 버전 제거
+            
+            # 너무 긴 도메인 줄이기
+            if len(domain) > 25:
+                parts = domain.split('.')
+                if len(parts) > 2:
+                    domain = f"{parts[0][:8]}...{parts[-1]}"
+                else:
+                    domain = domain[:22] + "..."
+        else:
+            domain = "외부 링크"
         
-        # 도메인이 너무 길면 줄임
-        if len(domain) > 15:
-            domain = domain[:12] + "..."
-        
-        # 각 출처 버튼을 개별 HTML로 렌더링
-        st.markdown(f"""
-        <a href="{source['url']}" target="_blank" class="source-link-button">
-            🔗 {domain}
-        </a>
-        """, unsafe_allow_html=True)
+        # 출처 버튼 HTML 생성
+        source_buttons_html += f'<a href="{source["url"]}" target="_blank" class="source-link-button" title="{source["url"]}">{domain}</a>'
     
-    # 컨테이너 닫기
-    st.markdown("""
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+    source_buttons_html += '</div>'
+    
+    # 모든 출처 버튼을 한 번에 렌더링 (컨테이너 없이)
+    st.markdown(source_buttons_html, unsafe_allow_html=True)
 
 
 def render_typing_indicator() -> None:

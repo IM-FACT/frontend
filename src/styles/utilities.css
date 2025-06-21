@@ -1,110 +1,131 @@
-/* 기존 Streamlit 버튼 스타일 (퀵버튼 외부용) */
+/* === 전역 버튼 스타일 === */
 .stButton > button {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
-    border: 1px solid var(--border-color);
-    color: var(--text-primary);
-    border-radius: 10px;
-    padding: 12px 20px;
-    font-weight: 500;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: var(--bg-glass) !important;
+    border: 1px solid var(--border-default) !important;
+    color: var(--text-secondary) !important;
+    border-radius: var(--radius-md) !important;
+    padding: var(--button-padding-y) var(--button-padding-x) !important;
+    font-weight: var(--font-weight-normal) !important;
+    font-size: var(--font-size-base) !important;
+    transition: all var(--transition-normal) !important;
+    backdrop-filter: blur(8px) !important;
+    box-shadow: var(--shadow-sm) !important;
+    cursor: pointer !important;
+    letter-spacing: -0.01em !important;
 }
 
 .stButton > button:hover {
-    background: linear-gradient(135deg, rgba(79, 209, 197, 0.1), rgba(79, 209, 197, 0.05));
-    border-color: rgba(79, 209, 197, 0.4);
-    color: var(--accent-color);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(79, 209, 197, 0.2);
+    background: var(--color-accent-muted) !important;
+    border-color: var(--border-strong) !important;
+    color: var(--text-accent) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: var(--shadow-accent) !important;
 }
 
-/* 퀵버튼은 이제 HTML로 구현되어 출처 버튼과 동일한 CSS 사용 */
-
-/* 입력 필드 스타일 개선 */
-.stTextInput > div {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02)) !important;
-    border: 1px solid rgba(79, 209, 197, 0.15) !important;
-    border-radius: 16px !important;
+/* === 입력 필드 스타일 === */
+.stTextInput > div,
+.stTextArea > div {
+    background: var(--bg-glass) !important;
+    border: 1px solid var(--border-subtle) !important;
+    border-radius: var(--radius-lg) !important;
     color: var(--text-primary) !important;
     backdrop-filter: blur(8px) !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+    box-shadow: var(--shadow-md) !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
 }
 
-.stTextInput > div > div > input {
+.stTextInput > div > div > input,
+.stTextArea > div > div > textarea {
     color: var(--text-primary) !important;
     font-family: var(--font-family) !important;
     background: transparent !important;
     border: none !important;
-    padding: 14px 18px !important;
-    font-size: 0.95rem !important;
+    padding: var(--space-lg) var(--space-xl) !important;
+    font-size: var(--font-size-lg) !important;
     display: flex !important;
     align-items: center !important;
-    line-height: 1.2 !important;
+    line-height: var(--line-height-tight) !important;
     vertical-align: middle !important;
 }
 
-.stTextInput > div:focus-within {
-    border-color: var(--accent-color) !important;
-    box-shadow: 0 0 0 3px rgba(79, 209, 197, 0.2), 0 6px 20px rgba(0, 0, 0, 0.15) !important;
+.stTextInput > div:focus-within,
+.stTextArea > div:focus-within {
+    border-color: var(--border-strong) !important;
+    box-shadow: 0 0 0 2px var(--color-accent-muted), var(--shadow-lg) !important;
 }
 
-/* 채팅 입력 컨테이너 - 채팅 메시지와 동일한 너비로 일관성 유지 */
+/* TextArea 전용 스타일 */
+.stTextArea > div > div > textarea {
+    resize: none !important;
+    min-height: 60px !important;
+    max-height: 300px !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    word-wrap: break-word !important;
+    white-space: pre-wrap !important;
+}
+
+/* === 채팅 입력 컨테이너 === */
 .chat-input-container {
     width: var(--content-width) !important;
     max-width: var(--content-max-width) !important;
-    margin: 25px auto !important;
+    margin: var(--space-2xl) auto !important;
     display: flex !important;
     justify-content: center !important;
 }
 
-.chat-input-container .stTextInput {
+.chat-input-container .stTextInput,
+.chat-input-container .stTextArea {
     width: 100% !important;
     max-width: 100% !important;
 }
 
-/* 채팅 입력 필드 개선된 스타일 */
-.stTextInput > div > div > input {
+/* === 채팅 입력 필드 스타일 추가 === */
+.perplexity-search-container .stTextInput > div > div > input,
+.perplexity-search-container .stTextArea > div > div > textarea {
     background: transparent !important;
     border: none !important;
-    color: #eef2f7 !important;
-    padding: 16px 20px !important;
-    font-size: 1rem !important;
-    transition: all 0.3s ease !important;
+    color: var(--text-primary) !important;
+    padding: var(--input-padding-y) var(--input-padding-x) !important;
+    font-size: var(--font-size-xl) !important;
+    transition: all var(--transition-normal) !important;
     width: 100% !important;
     box-sizing: border-box !important;
     display: flex !important;
     align-items: center !important;
-    line-height: 1.2 !important;
+    line-height: var(--line-height-tight) !important;
     vertical-align: middle !important;
 }
 
-.stTextInput > div > div > input:focus {
+.stTextInput > div > div > input:focus,
+.stTextArea > div > div > textarea:focus {
     outline: none !important;
 }
 
-.stTextInput > div > div > input::placeholder {
-    color: rgba(255, 255, 255, 0.6) !important;
-    font-size: 0.9rem !important;
+.stTextInput > div > div > input::placeholder,
+.stTextArea > div > div > textarea::placeholder {
+    color: var(--text-muted) !important;
+    font-size: var(--font-size-md) !important;
 }
 
-/* 채팅 기록 카드 스타일 개선 */
+/* === 채팅 기록 스타일 === */
 .chat-history-list {
     width: var(--content-width);
     max-width: var(--content-max-width);
     margin: 0 auto;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: var(--space-md);
 }
 
 .chat-session-card {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 18px 20px;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: var(--bg-overlay);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: var(--space-xl) var(--input-padding-x);
+    transition: all var(--transition-normal);
     backdrop-filter: blur(8px);
     position: relative;
     overflow: hidden;
@@ -117,13 +138,13 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(79, 209, 197, 0.1), transparent);
-    transition: left 0.6s ease;
+    background: linear-gradient(90deg, transparent, var(--color-accent-muted), transparent);
+    transition: left var(--transition-slow);
 }
 
 .chat-session-card:hover {
-    background: linear-gradient(135deg, rgba(79, 209, 197, 0.08), rgba(79, 209, 197, 0.03));
-    border-color: rgba(79, 209, 197, 0.4);
+    background: var(--color-accent-muted);
+    border-color: var(--border-strong);
     transform: translateY(-2px); 
 }
 
@@ -132,72 +153,145 @@
 }
 
 .chat-session-title {
-    font-weight: 600;
-    font-size: 1rem;
-    margin-bottom: 6px;
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-xl);
+    margin-bottom: var(--space-sm);
     color: var(--text-primary);
 }
 
 .chat-session-preview {
-    font-size: 0.9rem;
+    font-size: var(--font-size-md);
     color: var(--text-secondary);
-    line-height: 1.4;
+    line-height: var(--line-height-base);
 }
 
-/* 대화 기록 탭 버튼 스타일 개선 */
+/* === 대화 기록 탭 버튼 통일 === */
+
+/* 1. 대화 세션 선택 버튼 */
 .chat-history-container [data-testid="stButton"] > button {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02)) !important;
-    border: 1px solid var(--border-color) !important;
-    border-radius: 12px !important;
-    padding: 16px 20px !important;
-    color: var(--text-primary) !important;
-    font-size: 0.9rem !important;
-    font-weight: 500 !important;
+    background: var(--bg-glass) !important;
+    border: 1px solid var(--border-default) !important;
+    border-radius: var(--radius-md) !important;
+    padding: var(--space-lg) var(--input-padding-x) !important;
+    color: var(--text-secondary) !important;
+    font-size: var(--font-size-md) !important;
+    font-weight: var(--font-weight-normal) !important;
     text-align: left !important;
-    line-height: 1.4 !important;
+    line-height: var(--line-height-base) !important;
     white-space: pre-line !important;
     width: 100% !important;
     min-height: 60px !important;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    transition: all var(--transition-normal) !important;
     backdrop-filter: blur(8px) !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+    box-shadow: var(--shadow-sm) !important;
+    cursor: pointer !important;
+    letter-spacing: -0.01em !important;
 }
 
 .chat-history-container [data-testid="stButton"] > button:hover {
-    background: linear-gradient(135deg, rgba(79, 209, 197, 0.08), rgba(79, 209, 197, 0.03)) !important;
-    border-color: rgba(79, 209, 197, 0.4) !important;
-    transform: translateY(-2px) !important;
-    box-shadow: 0 6px 20px rgba(79, 209, 197, 0.15) !important;
+    background: var(--color-accent-muted) !important;
+    border-color: var(--border-strong) !important;
+    color: var(--text-accent) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: var(--shadow-accent) !important;
 }
 
+/* 2. 활성 세션 버튼 (primary) */
 .chat-history-container [data-testid="stButton"] > button[data-baseweb="button"][kind="primary"] {
-    background: linear-gradient(135deg, rgba(79, 209, 197, 0.15), rgba(79, 209, 197, 0.08)) !important;
-    border-color: var(--accent-color) !important;
-    color: var(--accent-color) !important;
-    box-shadow: 0 0 0 2px rgba(79, 209, 197, 0.2), 0 4px 16px rgba(79, 209, 197, 0.2) !important;
+    background: var(--color-accent-muted) !important;
+    border-color: var(--border-strong) !important;
+    color: var(--text-accent) !important;
+    box-shadow: 0 0 0 2px var(--color-accent-muted), var(--shadow-lg) !important;
 }
 
-/* 대화 기록 컨테이너 너비 조정 */
+/* 3. 작은 액션 버튼들 (삭제, 새 대화) */
+.chat-history-container [data-testid="stButton"] > button[title="대화 삭제"],
+.chat-history-container button[key*="delete_"],
+.chat-history-container button[key*="new_chat"] {
+    background: var(--bg-glass) !important;
+    border: 1px solid var(--border-default) !important;
+    border-radius: var(--radius-md) !important;
+    padding: var(--space-md) var(--space-lg) !important;
+    color: var(--text-secondary) !important;
+    font-size: var(--font-size-base) !important;
+    font-weight: var(--font-weight-normal) !important;
+    min-height: var(--button-height-md) !important;
+    width: 100% !important;
+    transition: all var(--transition-normal) !important;
+    backdrop-filter: blur(8px) !important;
+    box-shadow: var(--shadow-sm) !important;
+    cursor: pointer !important;
+    letter-spacing: -0.01em !important;
+    text-align: center !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.chat-history-container [data-testid="stButton"] > button[title="대화 삭제"]:hover,
+.chat-history-container button[key*="delete_"]:hover,
+.chat-history-container button[key*="new_chat"]:hover {
+    background: var(--color-accent-muted) !important;
+    border-color: var(--border-strong) !important;
+    color: var(--text-accent) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: var(--shadow-accent) !important;
+}
+
+/* 4. 삭제 버튼 특별 스타일 */
+.chat-history-container button[key*="delete_"]:hover {
+    background: rgba(239, 68, 68, 0.08) !important;
+    border-color: rgba(239, 68, 68, 0.3) !important;
+    color: #ef4444 !important;
+    box-shadow: 0 6px 20px rgba(239, 68, 68, 0.15) !important;
+}
+
+/* 5. 새 대화 시작 버튼 강조 스타일 */
+.chat-history-container button[key*="new_chat"]:hover {
+    background: rgba(34, 197, 94, 0.08) !important;
+    border-color: rgba(34, 197, 94, 0.3) !important;
+    color: #22c55e !important;
+    box-shadow: 0 6px 20px rgba(34, 197, 94, 0.15) !important;
+}
+
+/* === 대화 기록 컨테이너 === */
 .chat-history-container {
     width: var(--content-width);
     max-width: var(--content-max-width);
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 0 var(--input-padding-x);
     box-sizing: border-box;
 }
 
-/* 반응형 스타일 */
+/* 대화 기록 검색창 스타일 */
+.chat-history-container .stTextInput > div > div > input {
+    background: transparent !important;
+    border: none !important;
+    color: var(--text-primary) !important;
+    padding: var(--space-lg) var(--input-padding-x) !important;
+    font-size: var(--font-size-lg) !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+/* === 반응형 스타일 === */
 @media screen and (max-width: 767px) {
     .chat-history-container {
-        width: calc(100vw - 20px);
-        max-width: calc(100vw - 20px);
-        margin: 0 10px;
-        padding: 0;
+        padding: 0 var(--padding-mobile);
     }
     
+    /* 모바일: 대화 세션 버튼 */
     .chat-history-container [data-testid="stButton"] > button {
-        padding: 14px 16px !important;
-        font-size: 0.85rem !important;
+        padding: var(--space-lg) var(--space-lg) !important;
+        font-size: var(--font-size-base) !important;
         min-height: 55px !important;
+    }
+    
+    /* 모바일: 작은 액션 버튼들 */
+    .chat-history-container button[key*="delete_"],
+    .chat-history-container button[key*="new_chat"] {
+        padding: var(--space-sm) var(--space-md) !important;
+        font-size: var(--font-size-sm) !important;
+        min-height: var(--button-height-sm) !important;
     }
 }

@@ -3,10 +3,10 @@
     position: fixed;
     top: 0;
     left: 0;
-    width: 54px;
+    width: var(--sidebar-width);
     height: 100vh;
-    background: var(--bg-primary);
-    border-right: 1px solid var(--border-color);
+    background: var(--color-primary);
+    border-right: 1px solid var(--border-subtle);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -19,23 +19,23 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 6px 0;
-    color: rgba(255, 255, 255, 0.6);
-    border-radius: 8px;
-    font-size: 1.1rem;
+    margin: var(--space-sm) 0;
+    color: var(--text-muted);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-2xl);
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: background-color var(--transition-fast);
 }
 
 .sidebar-icon:hover {
-    background-color: rgba(255, 255, 255, 0.08);
-    color: var(--accent-color);
+    background-color: var(--bg-overlay-hover);
+    color: var(--text-accent);
 }
 
 .sidebar-icon.active {
-    background: rgba(79, 209, 197, 0.2);
-    color: var(--accent-color);
-    border-left: 3px solid var(--accent-color);
+    background: var(--color-accent-muted);
+    color: var(--text-accent);
+    border-left: 3px solid var(--color-accent);
 }
 
 .sidebar-icon a, .sidebar-user a {
@@ -56,10 +56,10 @@
 .imfact-footer {
     width: var(--content-width);
     max-width: var(--content-max-width);
-    margin: 24px auto 0;
+    margin: var(--space-2xl) auto 0;
     text-align: center;
-    color: rgba(255, 255, 255, 0.3);
-    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
 }
 
 /* 대화 기록 탭 스타일 */
@@ -70,12 +70,12 @@
 }
 
 .chat-session-card {
-    background: linear-gradient(135deg, var(--bg-secondary), rgba(255, 255, 255, 0.01));
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 18px 22px;
-    margin-bottom: 16px;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: var(--bg-overlay);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: var(--space-xl) var(--space-2xl);
+    margin-bottom: var(--space-lg);
+    transition: all var(--transition-normal);
     cursor: pointer;
     position: relative;
     overflow: hidden;
@@ -88,15 +88,15 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(79, 209, 197, 0.1), transparent);
-    transition: left 0.6s ease;
+    background: linear-gradient(90deg, transparent, var(--color-accent-muted), transparent);
+    transition: left var(--transition-slow);
 }
 
 .chat-session-card:hover {
-    background: linear-gradient(135deg, rgba(79, 209, 197, 0.08), rgba(79, 209, 197, 0.03));
-    border-color: rgba(79, 209, 197, 0.4);
+    background: var(--color-accent-muted);
+    border-color: var(--border-strong);
     transform: translateY(-2px) scale(1.01);
-    box-shadow: 0 6px 20px rgba(79, 209, 197, 0.2);
+    box-shadow: var(--shadow-accent);
 }
 
 .chat-session-card:hover::before {
@@ -104,47 +104,46 @@
 }
 
 .chat-session-card.active {
-    background: linear-gradient(135deg, rgba(79, 209, 197, 0.15), rgba(79, 209, 197, 0.08));
-    border-color: var(--accent-color);
-    box-shadow: 0 0 0 2px rgba(79, 209, 197, 0.2),
-                0 4px 16px rgba(79, 209, 197, 0.2);
+    background: var(--color-accent-muted);
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 2px var(--color-accent-muted), var(--shadow-lg);
 }
 
 .chat-session-title {
-    font-weight: 600;
-    font-size: 1rem;
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-xl);
     color: var(--text-primary);
-    margin-bottom: 8px;
+    margin-bottom: var(--space-sm);
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--space-sm);
 }
 
 .chat-session-preview {
     color: var(--text-secondary);
-    font-size: 0.9rem;
-    line-height: 1.4;
-    margin-bottom: 8px;
+    font-size: var(--font-size-md);
+    line-height: var(--line-height-base);
+    margin-bottom: var(--space-sm);
 }
 
 .chat-session-meta {
     display: flex;
-    gap: 16px;
-    font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.5);
+    gap: var(--space-lg);
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
 }
 
 .chat-session-meta span {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: var(--space-xs);
 }
 
 /* 로고 및 환영 영역 개선 */
 .logo-container {
     text-align: center;
-    margin-top: 60px;
-    margin-bottom: 30px;
+    margin-top: var(--space-5xl);
+    margin-bottom: var(--space-3xl);
     max-width: 700px;
     margin-left: auto;
     margin-right: auto;
@@ -169,10 +168,10 @@
 .welcome-text {
     text-align: center;
     max-width: 700px;
-    margin: 0 auto 45px;
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 1.1rem;
-    line-height: 1.7;
+    margin: 0 auto var(--space-4xl);
+    color: var(--text-secondary);
+    font-size: var(--font-size-2xl);
+    line-height: var(--line-height-loose);
     margin-left: auto;
     margin-right: auto;
     width: 100%;
@@ -180,7 +179,7 @@
     flex-direction: column;
     align-items: center;
     animation: fadeInUp 0.8s ease-out 0.2s both;
-    font-weight: 400;
+    font-weight: var(--font-weight-normal);
     letter-spacing: -0.01em;
 }
 
@@ -189,20 +188,25 @@
     /* 모바일: 사이드바 숨김 */
     .sidebar {
         transform: translateX(-100%);
-        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: transform var(--transition-normal);
         box-shadow: none;
+    }
+    
+    /* 모바일: 햄버거 메뉴 표시 */
+    .mobile-menu-button {
+        display: flex;
     }
     
     /* 모바일에서 사이드바가 보일 때 */
     .sidebar.mobile-open {
         transform: translateX(0);
         z-index: 9999;
-        box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3);
+        box-shadow: var(--shadow-xl);
         backdrop-filter: blur(8px);
     }
     
     /* 사이드바 열렸을 때 배경 오버레이 */
-    body.sidebar-open::before {
+    .mobile-menu-toggle:checked::before {
         content: '';
         position: fixed;
         top: 0;
@@ -211,7 +215,7 @@
         height: 100%;
         background: rgba(0, 0, 0, 0.5);
         z-index: 9998;
-        animation: fadeIn 0.3s ease;
+        animation: fadeIn var(--transition-normal) ease;
     }
     
     @keyframes fadeIn {
@@ -223,68 +227,126 @@
     .sidebar-icon {
         width: 48px;
         height: 48px;
-        margin: 8px 0;
-        font-size: 1.2rem;
+        margin: var(--space-sm) 0;
+        font-size: var(--font-size-xl);
     }
     
     /* 로고 컨테이너 모바일 조정 */
     .logo-container {
-        margin-top: 40px;
-        margin-bottom: 30px;
+        margin-top: var(--space-4xl);
+        margin-bottom: var(--space-3xl);
         padding: 0 var(--padding-mobile);
     }
     
     /* 환영 텍스트 모바일 조정 */
     .welcome-text {
-        margin: 0 auto 30px;
+        margin: 0 auto var(--space-3xl);
         padding: 0 var(--padding-mobile);
-        font-size: 0.9rem;
+        font-size: var(--font-size-md);
     }
     
     /* 채팅 세션 카드 모바일 조정 */
     .chat-session-card {
-        margin: 0 var(--padding-mobile) 12px;
-        padding: 14px 16px;
-        border-radius: 8px;
+        padding: var(--space-lg) var(--space-lg);
+        border-radius: var(--radius-sm);
+        margin-bottom: var(--space-md);
     }
     
     /* 채팅 히스토리 컨테이너 모바일 */
     .chat-history-container {
-        width: calc(100% - 20px);
-        max-width: calc(100% - 20px);
-        margin: 0 10px;
+        padding: 0 var(--padding-mobile);
     }
 }
 
 @media screen and (min-width: 768px) and (max-width: 1024px) {
     /* 태블릿 스타일 */
     .logo-container {
-        margin-top: 60px;
-        margin-bottom: 35px;
+        margin-top: var(--space-5xl);
+        margin-bottom: var(--space-4xl);
         padding: 0 var(--padding-tablet);
     }
     
     .welcome-text {
-        margin: 0 auto 35px;
+        margin: 0 auto var(--space-4xl);
         padding: 0 var(--padding-tablet);
     }
     
     .chat-session-card {
-        margin: 0 var(--padding-tablet) 14px;
-        padding: 16px 20px;
+        margin: 0 var(--padding-tablet) var(--space-lg);
+        padding: var(--space-lg) var(--input-padding-x);
     }
 }
 
 @media screen and (min-width: 1025px) {
-    /* 데스크톱 스타일 (기본값 유지) */
+    /* 데스크톱 스타일 */
     .logo-container {
-        margin-top: 80px;
-        margin-bottom: 40px;
+        margin-top: var(--space-5xl);
+        margin-bottom: var(--space-4xl);
         padding: 0 var(--padding-desktop);
     }
     
     .welcome-text {
-        margin: 0 auto 40px;
+        margin: 0 auto var(--space-4xl);
         padding: 0 var(--padding-desktop);
     }
+}
+
+/* === 모바일 햄버거 메뉴 === */
+.mobile-menu-toggle {
+    display: none;
+}
+
+.mobile-menu-button {
+    display: none;
+    position: fixed;
+    top: var(--space-lg);
+    left: var(--space-lg);
+    z-index: 10000;
+    width: 30px;
+    height: 30px;
+    flex-direction: column;
+    justify-content: space-around;
+    background: var(--color-secondary);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--space-sm);
+    padding: var(--space-sm);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    user-select: none;
+}
+
+.mobile-menu-button span {
+    width: 100%;
+    height: 2px;
+    background: var(--text-primary);
+    transition: all var(--transition-normal);
+    border-radius: 1px;
+}
+
+.mobile-menu-button:hover {
+    background: var(--color-accent);
+}
+
+.mobile-menu-button:hover span {
+    background: var(--color-primary);
+}
+
+/* checkbox가 체크되었을 때 햄버거 메뉴 변형 */
+.mobile-menu-toggle:checked + .mobile-menu-button span:nth-child(1) {
+    transform: rotate(45deg) translate(6px, 6px);
+}
+
+.mobile-menu-toggle:checked + .mobile-menu-button span:nth-child(2) {
+    opacity: 0;
+}
+
+.mobile-menu-toggle:checked + .mobile-menu-button span:nth-child(3) {
+    transform: rotate(-45deg) translate(6px, -6px);
+}
+
+/* checkbox가 체크되었을 때 사이드바 표시 */
+.mobile-menu-toggle:checked ~ .sidebar {
+    transform: translateX(0) !important;
+    z-index: 9999 !important;
+    box-shadow: var(--shadow-xl) !important;
 }

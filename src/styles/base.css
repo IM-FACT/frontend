@@ -1,6 +1,6 @@
-/* 글로벌 스타일 */
+/* === 글로벌 스타일 === */
 html, body, .main, .stApp {
-    background-color: var(--bg-primary) !important;
+    background-color: var(--color-primary) !important;
     color: var(--text-primary) !important;
     font-family: var(--font-family);
     margin: 0 !important;
@@ -9,10 +9,10 @@ html, body, .main, .stApp {
     height: 100% !important;
 }
 
-/* Streamlit 메인 앱에 사이드바 여백 적용 - Streamlit 1.40+ 호환 */
+/* === Streamlit 메인 컨테이너 === */
 section[data-testid="stMain"] > div[data-testid="stMainBlockContainer"] {
     padding-left: 74px !important;
-    padding-right: 30px !important;
+    padding-right: var(--space-3xl) !important;
     padding-top: 0 !important;
     padding-bottom: 0 !important;
     max-width: 1200px !important;
@@ -24,29 +24,26 @@ section[data-testid="stMain"] > div[data-testid="stMainBlockContainer"] {
     box-sizing: border-box !important;
 }
 
-/* 헤더 숨기기 */
+/* === Streamlit 요소 숨기기 === */
 header {
     visibility: hidden !important;
     height: 0 !important;
 }
 
-/* 사이드바 햄버거 메뉴 숨기기 */
 .st-emotion-cache-1b32qh4 {
     visibility: hidden !important;
 }
 
-/* 푸터 숨기기 */
 footer {
     visibility: hidden !important;
     height: 0 !important;
 }
 
-/* Streamlit 기본 사이드바 숨기기 */
 [data-testid="stSidebar"] {
     display: none !important;
 }
 
-/* Streamlit 기본 스타일 오버라이드 */
+/* === 공통 컨테이너 스타일 === */
 .stButton, .stTextInput {
     width: 100% !important;
     max-width: 100% !important;
@@ -54,15 +51,15 @@ footer {
     justify-content: center !important;
 }
 
-/* 버튼 기본 스타일 */
+/* === 버튼 기본 스타일 === */
 .stButton > button {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
-    border: 1px solid var(--border-color);
+    background: var(--bg-glass);
+    border: 1px solid var(--border-default);
     color: var(--text-primary);
-    border-radius: 10px;
-    padding: 12px 20px;
-    font-weight: 500;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: var(--radius-md);
+    padding: var(--space-md) var(--input-padding-x);
+    font-weight: var(--font-weight-medium);
+    transition: all var(--transition-normal);
     position: relative;
     overflow: hidden;
 }
@@ -74,17 +71,17 @@ footer {
     left: 50%;
     width: 0;
     height: 0;
-    background: radial-gradient(circle, rgba(79, 209, 197, 0.3) 0%, transparent 70%);
+    background: radial-gradient(circle, var(--color-accent-muted) 0%, transparent 70%);
     transform: translate(-50%, -50%);
-    transition: width 0.6s, height 0.6s;
+    transition: width var(--transition-slow), height var(--transition-slow);
 }
 
 .stButton > button:hover {
-    background: linear-gradient(135deg, rgba(79, 209, 197, 0.1), rgba(79, 209, 197, 0.05));
-    border-color: rgba(79, 209, 197, 0.4);
-    color: var(--accent-color);
+    background: var(--color-accent-muted);
+    border-color: var(--border-strong);
+    color: var(--text-accent);
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(79, 209, 197, 0.2);
+    box-shadow: var(--shadow-md);
 }
 
 .stButton > button:hover::before {
@@ -94,103 +91,95 @@ footer {
 
 .stButton > button:active {
     transform: translateY(0);
-    box-shadow: 0 2px 6px rgba(79, 209, 197, 0.2);
+    box-shadow: var(--shadow-sm);
 }
 
-/* Custom 컴포넌트 스타일만 유지 - Streamlit 네이티브 요소는 config.toml이 제어 */
-
-
-
-/* 텍스트 입력 필드 스타일 */
+/* === 텍스트 입력 필드 스타일 === */
 .stTextInput > div > div > input {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
+    background: var(--bg-glass);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
     color: var(--text-primary);
-    padding: 14px 20px;
-    font-size: 1rem;
-    transition: all 0.3s ease;
+    padding: var(--space-lg) var(--input-padding-x);
+    font-size: var(--font-size-xl);
+    transition: all var(--transition-normal);
     width: 100%;
     max-width: 100%;
     box-sizing: border-box;
 }
 
 .stTextInput > div > div > input:focus {
-    border-color: var(--accent-color);
-    box-shadow: 0 0 0 2px rgba(79, 209, 197, 0.2),
-                0 4px 12px rgba(79, 209, 197, 0.1);
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 2px var(--color-accent-muted), var(--shadow-md);
     outline: none;
 }
 
 .stTextInput > div > div > input::placeholder {
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--text-muted);
 }
 
-/* 퀵버튼은 이제 출처 버튼과 동일한 HTML/CSS 구조 사용 */
-
-/* Selectbox 스타일 */
+/* === Selectbox 스타일 === */
 .stSelectbox > div > div > div {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
-    border: 1px solid var(--border-color);
-    border-radius: 10px;
+    background: var(--bg-glass);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
     color: var(--text-primary);
 }
 
 .stSelectbox > div > div > div:hover {
-    border-color: rgba(79, 209, 197, 0.4);
+    border-color: var(--border-strong);
 }
 
 .stSelectbox > div > div > div[data-baseweb="select"]:focus-within {
-    border-color: var(--accent-color);
-    box-shadow: 0 0 0 2px rgba(79, 209, 197, 0.2);
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 2px var(--color-accent-muted);
 }
 
-/* Textarea 스타일 */
+/* === Textarea 스타일 === */
 .stTextArea > div > div > textarea {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
+    background: var(--bg-glass);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
     color: var(--text-primary);
-    padding: 12px 16px;
-    transition: all 0.3s ease;
+    padding: var(--space-md) var(--space-lg);
+    transition: all var(--transition-normal);
 }
 
 .stTextArea > div > div > textarea:focus {
-    border-color: var(--accent-color);
-    box-shadow: 0 0 0 2px rgba(79, 209, 197, 0.2);
+    border-color: var(--border-strong);
+    box-shadow: 0 0 0 2px var(--color-accent-muted);
     outline: none;
 }
 
-/* Expander 스타일 */
+/* === Expander 스타일 === */
 .stExpander {
-    border: 1px solid var(--border-color);
-    border-radius: 10px;
-    background: var(--bg-secondary);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    background: var(--color-secondary);
 }
 
 .stExpander > div > div > div > div > svg {
-    fill: var(--accent-color);
+    fill: var(--color-accent);
 }
 
-/* Success 메시지 스타일 */
+/* === 메시지 스타일 === */
 .stSuccess {
-    background-color: rgba(79, 209, 197, 0.1);
-    border: 1px solid rgba(79, 209, 197, 0.3);
-    border-radius: 8px;
-    color: var(--accent-color);
+    background-color: var(--color-accent-muted);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    color: var(--text-accent);
 }
 
-/* Info 메시지 스타일 */
 .stInfo {
-    background-color: rgba(79, 209, 197, 0.05);
-    border: 1px solid rgba(79, 209, 197, 0.2);
-    border-radius: 8px;
+    background-color: var(--bg-overlay);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-sm);
     color: var(--text-primary);
 }
 
-/* 반응형 Streamlit 컨테이너 */
+/* === 반응형 Streamlit 컨테이너 === */
 @media screen and (max-width: 767px) {
-    /* 모바일: 사이드바 여백 제거 - Streamlit 1.40+ 호환 */
+    /* 모바일: 사이드바 여백 제거 */
     section[data-testid="stMain"] > div[data-testid="stMainBlockContainer"] {
         padding-left: var(--padding-mobile) !important;
         padding-right: var(--padding-mobile) !important;
@@ -205,12 +194,10 @@ footer {
         box-sizing: border-box !important;
     }
     
-    /* 퀵버튼은 출처 버튼과 동일한 반응형 처리 */
-    
     /* 모바일: 텍스트 입력 */
     .stTextInput > div > div > input {
         font-size: 16px; /* iOS 줌 방지 */
-        padding: 12px 16px;
+        padding: var(--space-md) var(--space-lg);
     }
 }
 
