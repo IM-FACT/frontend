@@ -390,10 +390,10 @@
     letter-spacing: 0.02em;
 }
 
-/* === 출처 버튼 그리드 === */
+/* === 출처 버튼 리스트 (Grid -> Flex Column) === */
 .sources-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(var(--source-min-width), 1fr));
+    display: flex;
+    flex-direction: column;
     gap: var(--source-gap);
     margin: var(--space-sm) 0 var(--space-3xl) 0;
     padding: 0 var(--input-padding-x);
@@ -402,30 +402,6 @@
     margin-left: auto;
     margin-right: auto;
     box-sizing: border-box;
-    container-type: inline-size;
-    container-name: sources-grid;
-}
-
-/* Container Queries */
-@container sources-grid (max-width: 400px) {
-    .sources-grid {
-        grid-template-columns: 1fr;
-        gap: var(--source-gap);
-    }
-}
-
-@container sources-grid (min-width: 401px) and (max-width: 600px) {
-    .sources-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: var(--space-md);
-    }
-}
-
-@container sources-grid (min-width: 601px) {
-    .sources-grid {
-        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-        gap: var(--space-md);
-    }
 }
 
 /* === 출처 링크 버튼 === */

@@ -9,7 +9,12 @@ from typing import Dict, List, Optional, Any
 from dotenv import load_dotenv
 
 load_dotenv()
-BACKEND_URL = os.getenv("BACKEND_URL")
+
+# 현재 배포된 EC2 백엔드
+# BACKEND_URL = os.getenv("BACKEND_URL")
+
+# 로컬 Docker 백엔드와 통신
+BACKEND_URL = "http://localhost:8000"
 
 class ChatStorage:
     """

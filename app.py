@@ -24,19 +24,23 @@ from src.components.chat_message import render_sources_section
 # 환경 변수 로드
 load_dotenv()
 
-# 백엔드 API 주소 환경변수 처리 - EC2 서버 연결
-BACKEND_URL = os.getenv("BACKEND_URL")
+# 백엔드 API 주소 환경변수 처리
+# 현재 배포된 EC2 백엔드
+# BACKEND_URL = os.getenv("BACKEND_URL") 
+# 로컬 Docker 백엔드와 통신
+BACKEND_URL = "http://localhost:8000"
 
-def ask_backend(question: str) -> str:
+def ask_backend(question: str) -> dict:
     """
-    FastAPI 백엔드의 /im-fact/ask API를 호출하여 답변을 받아옵니다.
+    FastAPI 백엔드의 /im-fact/ask API를 호출하여 답변과 출처를 받아옵니다.
     네트워크 오류와 타임아웃에 대한 강화된 에러 핸들링 포함
     """
+    default_error_response = {"answer": "죄송합니다, 답변을 생성하는 데 실패했습니다.", "sources": []}
     try:
         # 요청 전 백엔드 상태 확인
         health_resp = requests.get(f"{BACKEND_URL}/health", timeout=5)
         if health_resp.status_code != 200:
-            return "⚠️ 백엔드 서버에 연결할 수 없습니다. 잠시 후 다시 시도해주세요."
+            return {"answer": "⚠️ 백엔드 서버에 연결할 수 없습니다. 잠시 후 다시 시도해주세요.", "sources": []}
         
         # 메인 API 호출
         resp = requests.post(
@@ -47,26 +51,28 @@ def ask_backend(question: str) -> str:
         )
         
         if resp.status_code == 200:
-            content = resp.json().get("content", "")
-            if content:
-                return content
+            response_data = resp.json()
+            # answer와 sources 키가 있는지 확인
+            if "answer" in response_data and "sources" in response_data:
+                return response_data
             else:
-                return "🤖 답변을 생성하는 중 문제가 발생했습니다. 다시 시도해주세요."
-        elif resp.status_code == 400:
-            return "❌ 질문 형식에 문제가 있습니다. 다른 방식으로 질문해주세요."
-        elif resp.status_code == 500:
-            return "🔧 서버에서 일시적인 문제가 발생했습니다. 잠시 후 다시 시도해주세요."
+                return default_error_response
         else:
-            return f"⚠️ 예상치 못한 오류가 발생했습니다. (상태코드: {resp.status_code})"
+            # 오류 응답에서도 answer, sources 구조를 유지
+            error_content = resp.json()
+            return {
+                "answer": error_content.get("answer", f"⚠️ 예상치 못한 오류 (상태코드: {resp.status_code})"),
+                "sources": error_content.get("sources", [])
+            }
             
     except requests.exceptions.Timeout:
-        return "⏱️ 답변 생성에 시간이 오래 걸리고 있습니다. 복잡한 질문의 경우 시간이 더 소요될 수 있습니다."
+        return {"answer": "⏱️ 답변 생성에 시간이 오래 걸리고 있습니다. 복잡한 질문의 경우 시간이 더 소요될 수 있습니다.", "sources": []}
     except requests.exceptions.ConnectionError:
-        return "🌐 네트워크 연결을 확인해주세요. 백엔드 서버가 실행 중인지 확인해주세요."
+        return {"answer": "🌐 네트워크 연결을 확인해주세요. 백엔드 서버가 실행 중인지 확인해주세요.", "sources": []}
     except requests.exceptions.RequestException as e:
-        return f"📡 요청 처리 중 오류가 발생했습니다: {str(e)}"
+        return {"answer": f"📡 요청 처리 중 오류가 발생했습니다: {str(e)}", "sources": []}
     except Exception as e:
-        return f"🚨 예상치 못한 오류가 발생했습니다: {str(e)}"
+        return {"answer": f"🚨 예상치 못한 오류가 발생했습니다: {str(e)}", "sources": []}
 
 # 페이지 구성
 st.set_page_config(layout="wide", initial_sidebar_state="expanded", page_title="IM.FACT - 환경 기후 어시스턴트")
@@ -301,19 +307,19 @@ def generate_response(question):
     now = datetime.now().strftime("%H:%M")
     
     try:
-        # 실제 백엔드 API 호출
-        backend_answer = ask_backend(question)
+        # 실제 백엔드 API 호출 (이제 딕셔너리 반환)
+        backend_response = ask_backend(question)
         
         # 답변 검증
-        if not backend_answer or backend_answer.strip() == "":
-            backend_answer = "죄송합니다. 답변을 생성할 수 없었습니다. 다시 시도해주세요."
+        if not backend_response.get("answer", "").strip():
+            backend_response["answer"] = "죄송합니다. 답변을 생성할 수 없었습니다. 다시 시도해주세요."
         
         answer = {
             "role": "assistant",
-            "content": backend_answer,
+            "content": backend_response["answer"],
             "time": now,
             "timestamp": datetime.now().isoformat(),
-            "sources": []  # 출처는 렌더링 시 자동 추출됨
+            "sources": backend_response["sources"]  # 백엔드에서 받은 출처 사용
         }
         
         # 채팅 기록에 응답 추가
